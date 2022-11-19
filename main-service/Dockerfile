@@ -1,4 +1,4 @@
 FROM amazoncorretto:11
-COPY target/*.jar gateway.jar
+COPY target/*.jar main-service.jar
 ENTRYPOINT ["java","-jar","main-service.jar"]
-#TODO chack docker file
+#TODO check docker file

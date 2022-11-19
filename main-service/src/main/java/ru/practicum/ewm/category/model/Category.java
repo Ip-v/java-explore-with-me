@@ -1,4 +1,4 @@
-package ru.practicum.ewm.compilation.model;
+package ru.practicum.ewm.category.model;
 
 import lombok.*;
 
@@ -11,14 +11,12 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "compilations")
-public class Compilation {
+@Table(name = "category")
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "compilation_id")
+    @Column(name = "category_id")
     private Long id;
     @Column
-    private Boolean pinned;
-    @Column
-    private String title;
+    private String name;
 }

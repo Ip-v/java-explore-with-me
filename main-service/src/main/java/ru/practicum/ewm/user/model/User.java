@@ -1,5 +1,24 @@
 package ru.practicum.ewm.user.model;
 
-//TODO check
+import lombok.*;
+
+import javax.persistence.*;
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long id;
+    @Column(name = "user_name")
+    private String name;
+    @Column(name = "user_email")
+    private String email;
 }
