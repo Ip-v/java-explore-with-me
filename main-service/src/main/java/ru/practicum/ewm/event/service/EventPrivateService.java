@@ -46,7 +46,7 @@ public interface EventPrivateService {
     /**
      * Получение информации о запросах на участие в событии текущего пользователя
      */
-    EventFullDto getRequests(Long userId, Long eventId);
+    List<ParticipationRequestDto> getRequests(Long userId, Long eventId);
 
     /**
      * <h3>Подтверждение чужой заявки на участие в событии текущего пользователя</h3>

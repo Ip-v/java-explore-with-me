@@ -7,6 +7,8 @@ import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.request.model.Request;
 import ru.practicum.ewm.request.model.RequestStatus;
 
+import java.util.List;
+
 /**
  * Репозитория запросов
  */
@@ -16,4 +18,16 @@ public interface EventRequestRepository extends JpaRepository<Request, Long> {
 //    Integer countParticipants(Long event, RequestStatus status); //todo delete
 
     Long countByEventAndConfirmed(Event event, RequestStatus confirmed);
+
+    /**
+     * Запрос заявок на участие пользвоателя в чужих событиях
+     */
+    @Query("select req from Request req left join Event as ev on req.event.id = ev.id " +
+            "where req.user.id <> ev.initiator.id order by req.createdOn desc")
+    List<Request> getAllUserRequests(Long userId);
+
+    List<Request> findByEvent(Event event);
+
+    @Query("update Request set confirmed = 'REJECTED' where event.id =?1")
+    void rejectAllPendingRequests(Long eventId);
 }

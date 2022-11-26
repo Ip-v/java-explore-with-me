@@ -8,6 +8,7 @@ import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.service.UserService;
 import ru.practicum.ewm.utils.Create;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class UserAdminController {
      * Добавление нового пользователия
      */
     @PostMapping
-    public UserDto addUser(@RequestBody @Validated({Create.class}) UserDto dto) {
+    public UserDto addUser(@RequestBody @Valid UserDto dto) {
         log.info("Добавление нового пользователия {}", dto);
         return service.addUser(dto);
     }

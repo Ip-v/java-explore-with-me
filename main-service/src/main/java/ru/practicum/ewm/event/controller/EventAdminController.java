@@ -2,6 +2,7 @@ package ru.practicum.ewm.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.model.dto.EventFullDto;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
@@ -18,6 +19,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/admin/events")
 public class EventAdminController {
 
@@ -45,7 +47,7 @@ public class EventAdminController {
      * <i>Редактирование данных любого события администратором. Валидация данных не требуется.</i>
      */
     @PutMapping("/{eventId}")
-    public EventFullDto updateEvent(@RequestBody EventFullDto dto,
+    public EventFullOutDto updateEvent(@RequestBody EventFullDto dto,
                                     @PathVariable @Positive(message = "The number must be greater then 0") Long eventId) {
         log.info("Редактирование события {} -> {}", eventId, dto);
         return service.updateEvent(dto, eventId);
@@ -69,7 +71,7 @@ public class EventAdminController {
      * <i>Событие не должно быть опубликовано.</i>
      */
     @PatchMapping("/{eventId}/reject")
-    public EventShortDto rejectEvent(@PathVariable @Positive(message = "The number must be greater then 0")
+    public EventFullOutDto rejectEvent(@PathVariable @Positive(message = "The number must be greater then 0")
                                      Long eventId) {
         log.info("Отклонение события {}", eventId);
         return service.rejectEvent(eventId);

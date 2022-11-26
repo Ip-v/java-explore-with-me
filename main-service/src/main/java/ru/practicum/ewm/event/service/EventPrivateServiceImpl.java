@@ -8,19 +8,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repository.CategoryRepository;
-import ru.practicum.ewm.event.model.dto.EventFullDto;
-import ru.practicum.ewm.event.model.dto.EventFullOutDto;
-import ru.practicum.ewm.event.model.EventMapper;
-import ru.practicum.ewm.event.model.dto.EventShortDto;
 import ru.practicum.ewm.event.model.Event;
+import ru.practicum.ewm.event.model.EventMapper;
 import ru.practicum.ewm.event.model.EventState;
 import ru.practicum.ewm.event.model.Location;
+import ru.practicum.ewm.event.model.dto.EventFullDto;
+import ru.practicum.ewm.event.model.dto.EventFullOutDto;
+import ru.practicum.ewm.event.model.dto.EventShortDto;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.event.repository.LocationRepository;
 import ru.practicum.ewm.exceptions.AccessDeniedException;
 import ru.practicum.ewm.exceptions.ConditionsAreNotMetException;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
+import ru.practicum.ewm.request.model.Request;
+import ru.practicum.ewm.request.model.RequestMapper;
+import ru.practicum.ewm.request.model.RequestStatus;
+import ru.practicum.ewm.request.repository.EventRequestRepository;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
 
@@ -42,6 +46,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
+    private final EventRequestRepository eventRequestRepository;
 
     @Override
     public List<EventShortDto> getEvents(Long userId, Integer from, Integer size) {
@@ -49,7 +54,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 new NotFoundException(String.format("User with id=%s not found", userId)));
         Pageable pageRequest = PageRequest.of(from / size, size);
         List<Event> events = repository.findAllByInitiatorId(userId, pageRequest);
-        return events.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
+        return events.stream()
+                .map(EventMapper::toEventShortDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -57,7 +64,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     public EventFullOutDto changeEvent(Long userId, EventFullDto dto) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id=%s not found", userId)));
-        
+
         Event update = dto.getId() == null ? findEventByInitiatorId(userId) : repository.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%s not found", dto.getId())));
 
@@ -192,23 +199,88 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         event.setState(EventState.CANCELED);
         Event save = repository.save(event);
-        log.info("Event with id={} successfully canceled", eventId);
 
+        log.info("Event with id={} successfully canceled", eventId);
         return EventMapper.toEventFullOutDto(save);
     }
 
     @Override
-    public EventFullDto getRequests(Long userId, Long eventId) {
-        return null;
+    public List<ParticipationRequestDto> getRequests(Long userId, Long eventId) {
+        userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("User with id=%s not found", userId)));
+
+        Event event = repository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(String.format("Event with id=%s not found", eventId)));
+
+        if (!userId.equals(event.getInitiator().getId())) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        log.debug("Request from db for all user {} event {} requests", userId, eventId);
+        return eventRequestRepository.findByEvent(event)
+                .stream()
+                .map(RequestMapper::toParticipantRequestDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ParticipationRequestDto confirmRequest(Long userId, Long eventId, Long reqId) {//todo implement
-        return null;
+    public ParticipationRequestDto confirmRequest(Long userId, Long eventId, Long reqId) {
+        userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("User with id=%s not found", userId)));
+
+        Event event = repository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(String.format("Event with id=%s not found", eventId)));
+
+        if (!userId.equals(event.getInitiator().getId())) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        Request request = eventRequestRepository.findById(reqId).orElseThrow(() ->
+                new NotFoundException(String.format("Requset with id=%s not found", reqId)));
+
+        if (!event.getModerationRequired() || event.getParticipantLimit() == 0) {
+            return RequestMapper.toParticipantRequestDto(request);
+        }
+
+        long confirmedRequests = eventRequestRepository.countByEventAndConfirmed(event, RequestStatus.CONFIRMED);
+        if (confirmedRequests == event.getParticipantLimit()) {
+            throw new ConditionsAreNotMetException("Reached participant limit");
+        }
+
+        request.setConfirmed(RequestStatus.CONFIRMED);
+        Request save = eventRequestRepository.save(request);
+        log.info("Request {} for event {} successfully confirmed by user {}", reqId, eventId, userId);
+
+        if (confirmedRequests + 1 == event.getParticipantLimit()) {
+            rejectAllPendingRequests(event);
+        }
+        return RequestMapper.toParticipantRequestDto(save);
+    }
+
+    private void rejectAllPendingRequests(Event event) {
+        log.info("Participant limit reached for event id = {}. Rehecting all pending requests.", event.getId());
+        eventRequestRepository.rejectAllPendingRequests(event.getId()); //todo check
     }
 
     @Override
-    public ParticipationRequestDto rejectRequest(Long userId, Long eventId, Long reqId) {//todo implement
-        return null;
+    @Transactional
+    public ParticipationRequestDto rejectRequest(Long userId, Long eventId, Long reqId) {
+        userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("User with id=%s not found", userId)));
+
+        Event event = repository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(String.format("Event with id=%s not found", eventId)));
+
+        if (!userId.equals(event.getInitiator().getId())) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        Request request = eventRequestRepository.findById(reqId).orElseThrow(() ->
+                new NotFoundException(String.format("Requset with id=%s not found", reqId)));
+
+        request.setConfirmed(RequestStatus.REJECTED);
+        Request save = eventRequestRepository.save(request);
+        log.info("Request with id={} successfully rejected", reqId);
+        return RequestMapper.toParticipantRequestDto(save);
     }
 }

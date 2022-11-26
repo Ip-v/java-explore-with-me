@@ -18,6 +18,8 @@ import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Контроллер запросов
@@ -48,9 +50,9 @@ public class EventRequestServiceImpl implements EventRequestService {
         if (event.getState() != EventState.PUBLISHED) {
             throw new ConditionsAreNotMetException("Event state should be PUBLISHED");
         }
-
-        long confirmedRequests = repository.countByEventAndConfirmed(event, RequestStatus.PENDING);
-        if (confirmedRequests == event.getParticipantLimit()) {
+        //todo add premoderation check
+        long confirmedRequests = repository.countByEventAndConfirmed(event, RequestStatus.CONFIRMED); //todo wrong status??
+        if (confirmedRequests >= event.getParticipantLimit()) {
             throw new ConditionsAreNotMetException("Reached participant limit");
         }
 
@@ -63,6 +65,31 @@ public class EventRequestServiceImpl implements EventRequestService {
         Request save = repository.save(request);
 
         log.info("User {} request for event {} successfully created", userId, eventId);
+        return RequestMapper.toParticipantRequestDto(save);
+    }
+
+    @Override
+    public List<ParticipationRequestDto> getRequests(Long userId) {
+        userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("User with id=%s not found", userId)));
+        log.debug("Query all user {} request from db", userId);
+        return repository.getAllUserRequests(userId)
+                .stream()
+                .map(RequestMapper::toParticipantRequestDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public ParticipationRequestDto cancelRequest(Long requestId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("User with id=%s not found", userId)));
+        Request request = repository.findById(requestId).orElseThrow(() ->
+                new NotFoundException(String.format("Request with id=%s not found", requestId)));
+
+        request.setConfirmed(RequestStatus.CANCELED);
+        Request save = repository.save(request);
+        log.info("Request id={} successfully CANCELED", requestId);
         return RequestMapper.toParticipantRequestDto(save);
     }
 }

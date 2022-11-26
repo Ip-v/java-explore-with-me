@@ -1,6 +1,7 @@
 package ru.practicum.ewm.event.service;
 
 import ru.practicum.ewm.event.model.dto.EventFullDto;
+import ru.practicum.ewm.event.model.dto.EventFullOutDto;
 import ru.practicum.ewm.event.model.dto.EventShortDto;
 import ru.practicum.ewm.event.model.SortType;
 
@@ -30,5 +31,5 @@ public interface EventPublicService {
      * <li>информация о событии должна включать в себя количество просмотров и количество подтвержденных запросов</li>
      * <li>информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики</li>
      */
-    EventFullDto getEventById(Long id);
+    EventFullOutDto getEventById(Long id);
 }

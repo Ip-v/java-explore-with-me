@@ -7,6 +7,7 @@ import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.request.service.EventRequestService;
 
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 /**
  * Закрытый API для работы с запросами текущего пользователя на участие в событиях
@@ -22,11 +23,10 @@ public class RequestPrivateController {
      * Получение информации о заявках текущего пользователя на участие в чужих событиях
      */
     @GetMapping
-    public ParticipationRequestDto getRequests(@PathVariable @Positive(message = "The number must be > then 0")
+    public List<ParticipationRequestDto> getRequests(@PathVariable @Positive(message = "The number must be > then 0")
                                                Long userId) {
         log.info("Получение информации о заявках пользователя {} на участие в чужих событиях", userId);
-        //todo implement
-        return null;
+        return service.getRequests(userId);
     }
 
     /**
@@ -53,7 +53,7 @@ public class RequestPrivateController {
                                                  @PathVariable @Positive(message = "The number must be > then 0")
                                                  Long requestId) {
         log.info("Отмена своего запроса {} пользователем {} на участие в событии", requestId, userId);
-        //todo implement
-        return null;
+
+        return service.cancelRequest(requestId, userId);
     }
 }

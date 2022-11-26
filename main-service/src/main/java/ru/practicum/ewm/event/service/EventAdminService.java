@@ -23,7 +23,7 @@ public interface EventAdminService {
      * Редактирование события<br>
      * <i>Редактирование данных любого события администратором. Валидация данных не требуется.</i>
      */
-    EventFullDto updateEvent(EventFullDto dto, Long eventId);
+    EventFullOutDto updateEvent(EventFullDto dto, Long eventId);
 
     /**
      * <h3>Публикация события</h3>
@@ -36,5 +36,5 @@ public interface EventAdminService {
      * Отклонение события<br>
      * <i>Событие не должно быть опубликовано.</i>
      */
-    EventShortDto rejectEvent(Long eventId);
+    EventFullOutDto rejectEvent(Long eventId);
 }

@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.compilation.dto.CompilationDto;
-import ru.practicum.ewm.compilation.service.CompilationService;
+import ru.practicum.ewm.compilation.dto.NewCompilationDto;
+import ru.practicum.ewm.compilation.service.CompilationAdminService;
 import ru.practicum.ewm.utils.Create;
 
 /**
@@ -18,16 +19,15 @@ import ru.practicum.ewm.utils.Create;
 @RequestMapping("/admin/compilations")
 public class CompilationAdminController {
 
-    private final CompilationService service;
+    private final CompilationAdminService service;
 
     /**
      * Добавление новой подборки
      */
     @PostMapping
-    public CompilationDto addCompilation(@RequestBody @Validated({Create.class}) CompilationDto dto) {
-        log.info("Добавление новой подюлоки {}", dto);
-        //todo implement
-        return null;
+    public CompilationDto addCompilation(@RequestBody @Validated({Create.class}) NewCompilationDto dto) {
+        log.info("Added new compilation {}", dto);
+        return service.addCompilation(dto);
     }
 
     /**
@@ -35,8 +35,8 @@ public class CompilationAdminController {
      */
     @DeleteMapping("/{compId}")
     public void deleteCompilation(@PathVariable(name = "compId") Long compId) {
-        log.info("Удаление подборки {}", compId);
-        //TODO implement
+        log.info("Compilation id={} deleted", compId);
+        service.deleteCompilation(compId);
     }
 
     /**
@@ -45,18 +45,18 @@ public class CompilationAdminController {
     @DeleteMapping("/{compId}/events/{eventId}")
     public void deleteEvent(@PathVariable(name = "compId") Long compId,
                             @PathVariable(name = "eventId") Long eventId) {
-        log.info("Удаление из подборки {} события {}", compId, eventId);
-        //TODO implement
+        log.info("Delete from compilation {} event {}", compId, eventId);
+        service.deleteEventFromCompilation(compId, eventId);
     }
 
     /**
      * Добавление события в подборку
      */
     @PatchMapping("/{compId}/events/{eventId}")
-    public void addEvent(@PathVariable(name = "compId") Long compId,
-                         @PathVariable(name = "eventId") Long eventId) {
-        log.info("Добавление в подборку {} события {}", compId, eventId);
-        //TODO implement
+    public void addEventToCompilation(@PathVariable(name = "compId") Long compId,
+                                      @PathVariable(name = "eventId") Long eventId) {
+        log.info("Added to compilation {} event {}", compId, eventId);
+        service.addEventToCompilation(compId, eventId);
     }
 
     /**
@@ -64,8 +64,8 @@ public class CompilationAdminController {
      */
     @DeleteMapping("/{compId}/pin")
     public void unpinCompilation(@PathVariable(name = "compId") Long compId) {
-        log.info("Открепить подборку {} на главной страницу", compId);
-        //TODO implement
+        log.info("Unpin compilation {}", compId);
+        service.unpinCompilation(compId);
     }
 
     /**
@@ -73,7 +73,7 @@ public class CompilationAdminController {
      */
     @PatchMapping("/{compId}/pin")
     public void pinCompilation(@PathVariable(name = "compId") Long compId) {
-        log.info("Закрепить подборку {} на главной странице", compId);
-        //TODO implement
+        log.info("Pin compilation {}", compId);
+        service.pinCompilation(compId);
     }
 }

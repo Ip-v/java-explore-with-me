@@ -1,8 +1,10 @@
 package ru.practicum.ewm.compilation.model;
 
 import lombok.*;
+import ru.practicum.ewm.event.model.Event;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,4 +23,11 @@ public class Compilation {
     private Boolean pinned;
     @Column
     private String title;
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "eventcompilationpairs",
+            joinColumns = { @JoinColumn(name = "compilation_id") },
+            inverseJoinColumns = { @JoinColumn(name = "event_id") }
+    )
+    private List<Event> events;
 }

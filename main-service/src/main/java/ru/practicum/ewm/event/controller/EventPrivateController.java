@@ -78,15 +78,14 @@ public class EventPrivateController {
     public EventFullOutDto cancelEventById(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
                                         @PathVariable @Positive(message = "The number must be > then 0") Long eventId) {
         log.info("Отмена события {} добавленного текущим пользователем {}", eventId, userId);
-        EventFullOutDto out =  service.cancelEventById(userId, eventId);
-        return out;
+        return service.cancelEventById(userId, eventId);
     }
 
     /**
      * Получение информации о запросах на участие в событии текущего пользователя
      */
     @GetMapping("/{eventId}/requests")
-    public EventFullDto getRequests(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
+    public List<ParticipationRequestDto> getRequests(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
                                     @PathVariable @Positive(message = "The number must be > then 0") Long eventId) {
         log.info("Получение информации о запросах на участие в событии {} пользователя {}", eventId, userId);
         return service.getRequests(userId, eventId);
