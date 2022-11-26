@@ -2,12 +2,12 @@ package ru.practicum.ewm.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.event.model.dto.EventFullDto;
+import ru.practicum.ewm.event.model.SortType;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
 import ru.practicum.ewm.event.model.dto.EventShortDto;
-import ru.practicum.ewm.event.model.SortType;
 import ru.practicum.ewm.event.service.EventPublicService;
 
 import javax.validation.constraints.Min;
@@ -38,17 +38,19 @@ public class EventPublicController {
      * информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
      */
     @GetMapping
-    public List<EventShortDto> getEvents(@RequestParam(name = "text", required = false) @NotEmpty String text,
+    public List<EventFullOutDto> getEvents(@RequestParam(name = "text", required = false) @NotEmpty String text,
                                          @RequestParam(name = "categories", required = false) Integer[] categories,
                                          @RequestParam(name = "paid", required = false) Boolean paid,
-                                         @RequestParam(name = "rangeStart", required = false) LocalDateTime rangeStart,
-                                         @RequestParam(name = "rangeEnd", required = false) LocalDateTime rangeEnd,
+                                         @RequestParam(name = "rangeStart", required = false)
+                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                         @RequestParam(name = "rangeEnd", required = false)
+                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                          @RequestParam(name = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
                                          @RequestParam(name = "sort", required = false)
 //                                             @ValueOfEnum(enumClass = SortType.class, isNullEnabled = true,
 //                                                     message = "Unsupported sorting value")
-                                             SortType sort,
-                                         @RequestParam(name = "from", defaultValue = "0")  @PositiveOrZero Integer from,
+                                         SortType sort,
+                                         @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
                                          @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size) {
         log.info("Получение событий с возможностью фильтрации {}", text);
         return service.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);

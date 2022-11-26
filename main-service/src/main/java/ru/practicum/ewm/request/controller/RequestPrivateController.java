@@ -24,7 +24,7 @@ public class RequestPrivateController {
      */
     @GetMapping
     public List<ParticipationRequestDto> getRequests(@PathVariable @Positive(message = "The number must be > then 0")
-                                               Long userId) {
+                                                     Long userId) {
         log.info("Получение информации о заявках пользователя {} на участие в чужих событиях", userId);
         return service.getRequests(userId);
     }

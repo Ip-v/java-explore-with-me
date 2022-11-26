@@ -52,6 +52,7 @@ public class Event {
     @Column(name = "request_moderation")
     private Boolean moderationRequired;
     @Column
+    @Enumerated(EnumType.STRING)
     private EventState state;
     @Transient
     private Long views;

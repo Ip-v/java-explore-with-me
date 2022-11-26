@@ -40,7 +40,7 @@ public class EventRequestServiceImpl implements EventRequestService {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id=%s not found", userId)));
 
-        Event event =  eventRepository.findById(eventId).orElseThrow(() ->
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event with id=%s not found", eventId)));
 
         if (event.getInitiator().getId().equals(userId)) {

@@ -7,7 +7,7 @@ import ru.practicum.ewm.user.model.User;
  */
 public class UserMapper {
     /**
-     *  UserDto -> User
+     * UserDto -> User
      */
     public static User toUser(UserDto dto) {
         return User.builder()

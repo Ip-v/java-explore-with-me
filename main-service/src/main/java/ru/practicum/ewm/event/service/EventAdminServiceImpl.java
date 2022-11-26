@@ -1,7 +1,10 @@
 package ru.practicum.ewm.event.service;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.model.Category;
@@ -9,6 +12,7 @@ import ru.practicum.ewm.category.repository.CategoryRepository;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.EventMapper;
 import ru.practicum.ewm.event.model.EventState;
+import ru.practicum.ewm.event.model.QEvent;
 import ru.practicum.ewm.event.model.dto.EventFullDto;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
 import ru.practicum.ewm.event.model.dto.EventShortDto;
@@ -17,6 +21,8 @@ import ru.practicum.ewm.exceptions.ConditionsAreNotMetException;
 import ru.practicum.ewm.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static ru.practicum.ewm.utils.DateFormat.DATE_FORMATTER;
@@ -25,15 +31,41 @@ import static ru.practicum.ewm.utils.DateFormat.DATE_FORMATTER;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EventAdminServiceImpl implements EventAdminService{
+public class EventAdminServiceImpl implements EventAdminService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
 
     @Override
-    public List<EventShortDto> getEvents(Integer[] users, String[] states, Integer[] categories,
+    public List<EventFullOutDto> getEvents(Integer[] users, String[] states, Integer[] categories,
                                          LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
-        //TODO implement
-        return null;
+
+        List<BooleanExpression> expression = new ArrayList<>();
+        QEvent event = QEvent.event;
+
+        if (users != null) {
+            expression.add(event.initiator.id.in(users));
+        }
+        if (states != null) {
+            EventState[] eventStates = Arrays.stream(states).map(EventMapper::toEventState).toArray(EventState[]::new);
+            expression.add(event.state.in(eventStates));
+        }
+        if (categories != null) {
+            expression.add(event.category.id.in(categories));
+        }
+        if (rangeStart != null) {
+            expression.add(event.eventDate.after(rangeStart));
+        }
+        if (rangeEnd != null) {
+            expression.add(event.eventDate.before(rangeEnd));
+        }
+
+        BooleanExpression searchCriteria = expression.stream().reduce(BooleanExpression::and).get();
+        Pageable pageable = PageRequest.of(from / size, size);
+
+
+        return eventRepository.findAll(searchCriteria, pageable)
+                .map(EventMapper::toEventFullOutDto)
+                .toList();
     }
 
     @Override
@@ -89,9 +121,6 @@ public class EventAdminServiceImpl implements EventAdminService{
             Category category = categoryRepository.findById(dto.getCategory()).orElseThrow(() ->
                     new NotFoundException(String.format("Category with id=%s not found.", dto.getId())));
             update.setCategory(category);
-        }
-        if (dto.getConfirmedRequests() != null) {
-            //TODO add field
         }
         if (dto.getCreatedOn() != null) {
             update.setCreatedOn(LocalDateTime.parse(dto.getCreatedOn(), DATE_FORMATTER));

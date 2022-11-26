@@ -16,7 +16,7 @@ public interface EventAdminService {
      * Поиск событий<br>
      * <i>Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия</i>
      */
-    List<EventShortDto> getEvents(Integer[] users, String[] states, Integer[] categories, LocalDateTime rangeStart,
+    List<EventFullOutDto> getEvents(Integer[] users, String[] states, Integer[] categories, LocalDateTime rangeStart,
                                   LocalDateTime rangeEnd, Integer from, Integer size);
 
     /**

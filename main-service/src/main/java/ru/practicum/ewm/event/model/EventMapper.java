@@ -1,11 +1,12 @@
 package ru.practicum.ewm.event.model;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.dto.EventFullDto;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
 import ru.practicum.ewm.event.model.dto.EventShortDto;
 import ru.practicum.ewm.user.dto.UserMapper;
+
+import java.util.Locale;
 
 import static ru.practicum.ewm.utils.DateFormat.DATE_FORMATTER;
 
@@ -35,7 +36,7 @@ public class EventMapper {
     }
 
     public static EventFullOutDto toEventFullOutDto(Event event) {
-       return EventFullOutDto.builder()
+        return EventFullOutDto.builder()
                 .annotation(event.getAnnotation())
                 .category(event.getCategory())
                 //.confirmedRequests(0L) //todo update
@@ -53,8 +54,6 @@ public class EventMapper {
                 .title(event.getTitle())
                 //.views(0L) //todo update
                 .build();
-
-
     }
 
     public static EventShortDto toEventShortDto(Event event) {
@@ -69,5 +68,9 @@ public class EventMapper {
                 .title(event.getTitle())
                 .views(0L) //TODO implement
                 .build();
+    }
+
+    public static EventState toEventState(String stateName) {
+            return EventState.valueOf(stateName.toUpperCase(Locale.ROOT));
     }
 }

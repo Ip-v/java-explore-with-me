@@ -6,7 +6,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.service.UserService;
-import ru.practicum.ewm.utils.Create;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

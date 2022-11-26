@@ -83,7 +83,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event id=%d not found", eventId)));
 
-        if(compilation.getEvents().contains(event)) {
+        if (compilation.getEvents().contains(event)) {
             throw new ConditionsAreNotMetException(
                     String.format("Compilation %d already contains event %d", compId, eventId));
         }
@@ -102,7 +102,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event id=%d not found", eventId)));
 
-        if(!compilation.getEvents().contains(event)) {
+        if (!compilation.getEvents().contains(event)) {
             throw new ConditionsAreNotMetException(
                     String.format("Compilation %d doesn't contains event %d", compId, eventId));
         }
