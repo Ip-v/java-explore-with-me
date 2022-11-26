@@ -28,20 +28,15 @@ public class CategoryPublicController {
     public List<CategoryDto> getAll(@RequestParam(name = "from", defaultValue = "10") Integer from,
                                     @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Запрос списка категорий from {} size {}", from, size);
-        //todo implement
-        return null;
+        return service.getAll(from, size);
     }
 
     /**
      * Получение информации о категории по ее идентификатору
-     *
-     * @param catId
-     * @return CategoryDto
      */
     @GetMapping("/{catId}")
     public CategoryDto getById(@PathVariable(name = "catId") @NotNull Long catId) {
         log.info("Запрос категорий по ИД {}", catId);
-        //todo implement
-        return null;
+        return service.getById(catId);
     }
 }

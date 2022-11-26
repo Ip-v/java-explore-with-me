@@ -17,9 +17,8 @@ public class ErrorHandler {
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError notFound(final Exception e) {
-        //todo implement
-        log.warn(e.getMessage());
-        return new ApiError();
+    public ApiError notFound(final NotFoundException e) {
+        log.warn(e.getApiError().toString());
+        return e.getApiError();
     }
 }

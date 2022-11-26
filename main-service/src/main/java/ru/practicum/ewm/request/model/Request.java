@@ -27,7 +27,8 @@ public class Request {
     @JoinColumn(name = "event_id")
     private Event event;
     @Column
-    private Boolean confirmed;
+    @Enumerated(EnumType.STRING)
+    private RequestStatus confirmed;
     @Column(name = "created_on")
     private LocalDateTime createdOn;
 }

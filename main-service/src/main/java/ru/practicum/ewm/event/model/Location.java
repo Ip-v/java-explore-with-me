@@ -20,8 +20,8 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "location_id")
     private Long id;
-    @Column
+    @Column(name = "latitude")
     private double lat;
-    @Column
+    @Column(name = "longitude")
     private double lon;
 }

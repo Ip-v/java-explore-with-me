@@ -3,7 +3,7 @@ package ru.practicum.ewm.compilation.dto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.ewm.event.dto.EventShortDto;
+import ru.practicum.ewm.event.model.dto.EventShortDto;
 import ru.practicum.ewm.utils.Create;
 
 import javax.validation.constraints.NotEmpty;

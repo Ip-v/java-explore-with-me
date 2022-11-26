@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.event.dto.EventFullDto;
-import ru.practicum.ewm.event.dto.EventShortDto;
-import ru.practicum.ewm.event.service.EventService;
+import ru.practicum.ewm.event.model.dto.EventFullDto;
+import ru.practicum.ewm.event.model.dto.EventFullOutDto;
+import ru.practicum.ewm.event.model.dto.EventShortDto;
+import ru.practicum.ewm.event.service.EventPrivateService;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.utils.Create;
+import ru.practicum.ewm.utils.Update;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -20,8 +22,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users/{userId}/events")
+@Validated
 public class EventPrivateController {
-    private final EventService service;
+    private final EventPrivateService service;
 
     /**
      * Получение событий добавленных текущим пользователем
@@ -32,22 +35,17 @@ public class EventPrivateController {
                                          @RequestParam(name = "from", defaultValue = "0") Integer from,
                                          @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получение событий добавленных пользователем {} from {} size {}", userId, from, size);
-        //todo implement
-        return null;
+        return service.getEvents(userId, from, size);
     }
 
     /**
-     * <h3>Изменение события добавленного текущим пользователем</h3>
-     * <li>изменить можно только отмененные события или события в состоянии ожидания модерации</li>
-     * <li>если редактируется отменённое событие, то оно автоматически переходит в состояние ожидания модерации</li>
-     * <li>дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента</li>
+     * Изменение события добавленного текущим пользователем
      */
     @PatchMapping
-    public EventFullDto changeEvent(@PathVariable @Positive(message = "The number must be greater then 0")
-                                    Long userId, @RequestBody @Validated({Create.class}) EventFullDto dto) {
+    public EventFullOutDto changeEvent(@PathVariable @Positive(message = "The number must be greater then 0")
+                                    Long userId, @RequestBody @Validated({Update.class}) EventFullDto dto) {
         log.info("Запрос изменения события добавленного пользователем {}, новые данные {}", userId, dto);
-        //todo implement
-        return null;
+        return service.changeEvent(userId, dto);
     }
 
     /**
@@ -55,22 +53,20 @@ public class EventPrivateController {
      * Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента.
      */
     @PostMapping
-    public EventFullDto addEvent(@PathVariable @Positive(message = "The number must be greater then 0") Long userId,
+    public EventFullOutDto addEvent(@PathVariable @Positive(message = "The number must be greater then 0") Long userId,
                                  @RequestBody @Validated({Create.class}) EventFullDto dto) {
         log.info("Запрос добавления нового события пользователем {}, {}", userId, dto);
-        //todo implement
-        return null;
+        return service.addEvent(userId, dto);
     }
 
     /**
      * Получение полной информации о событии добавленном текущим пользователем
      */
     @GetMapping("/{eventId}")
-    public EventFullDto getEventById(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
+    public EventFullOutDto getEventById(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
                                      @PathVariable @Positive(message = "The number must be > then 0") Long eventId) {
         log.info("Получение полной информации о событии {} добавленном текущим пользователем {}", userId, eventId);
-        //todo implement
-        return null;
+        return service.getEventById(userId, eventId);
     }
 
     /**
@@ -79,11 +75,11 @@ public class EventPrivateController {
      * <i>Отменить можно только событие в состоянии ожидания модерации.</i>
      */
     @PatchMapping("/{eventId}")
-    public EventFullDto cancelEventById(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
+    public EventFullOutDto cancelEventById(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
                                         @PathVariable @Positive(message = "The number must be > then 0") Long eventId) {
         log.info("Отмена события {} добавленного текущим пользователем {}", eventId, userId);
-        //todo implement
-        return null;
+        EventFullOutDto out =  service.cancelEventById(userId, eventId);
+        return out;
     }
 
     /**
@@ -93,8 +89,7 @@ public class EventPrivateController {
     public EventFullDto getRequests(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
                                     @PathVariable @Positive(message = "The number must be > then 0") Long eventId) {
         log.info("Получение информации о запросах на участие в событии {} пользователя {}", eventId, userId);
-        //todo implement
-        return null;
+        return service.getRequests(userId, eventId);
     }
 
     /**
@@ -111,10 +106,12 @@ public class EventPrivateController {
                                                   @PathVariable @Positive(message = "The number must be > then 0")
                                                   Long reqId) {
         log.info("Подтверждение заявки {} на участие в событии {} пользователем {}", reqId, eventId, userId);
-        //todo implement
-        return null;
+        return service.confirmRequest(userId, eventId, reqId);
     }
 
+    /**
+     * Отклонение чужой заявки на участие в событии текущего пользователя
+     */
     @PatchMapping("/{eventId}/requests/{reqId}/reject")
     public ParticipationRequestDto rejectRequest(@PathVariable @Positive(message = "The number must be > then 0")
                                                  Long userId,
@@ -123,7 +120,6 @@ public class EventPrivateController {
                                                  @PathVariable @Positive(message = "The number must be > then 0")
                                                  Long reqId) {
         log.info("Отклонение заявки {} на участие в событии {} пользователем {}", reqId, eventId, userId);
-        //todo implement
-        return null;
+        return service.rejectRequest(userId, eventId, reqId);
     }
 }

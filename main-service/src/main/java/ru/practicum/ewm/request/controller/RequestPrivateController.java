@@ -39,10 +39,9 @@ public class RequestPrivateController {
      */
     @PostMapping
     public ParticipationRequestDto addRequest(@PathVariable @Positive(message = "The number must be > then 0")
-                                              Long userId, @RequestParam(name = "eventId ") Long eventId) {
+                                              Long userId, @RequestParam @Positive Long eventId) {
         log.info("Добавление запроса от пользователя {} на участие в событии {}", userId, eventId);
-        //todo implement
-        return null;
+        return service.addRequest(userId, eventId);
     }
 
     /**

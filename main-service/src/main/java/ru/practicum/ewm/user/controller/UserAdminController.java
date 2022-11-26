@@ -22,6 +22,7 @@ import java.util.List;
 public class UserAdminController {
 
     private final UserService service;
+
     /**
      * Получение информации о прользователях<br>
      * <i>Возвращает информацию обо всех пользователях (учитываются параметры ограничения выборки),

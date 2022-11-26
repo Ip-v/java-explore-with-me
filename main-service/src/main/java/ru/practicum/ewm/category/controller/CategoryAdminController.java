@@ -23,24 +23,22 @@ public class CategoryAdminController {
 
     /**
      * Изменение категории<br>
-     * <i>Обратите внимание: имя категории должно быть уникальным</i>
+     * <i>Имя категории должно быть уникальным</i>
      */
     @PatchMapping
     public CategoryDto updateCategory(@RequestBody @Validated({Update.class}) CategoryDto dto) {
         log.info("Изменение категории {}", dto);
-        //todo implement
-        return null;
+        return service.updateCategory(dto);
     }
 
     /**
      * Добавление новой категории<br>
-     * <i>Обратите внимание: имя категории должно быть уникальным</i>
+     * <i>Имя категории должно быть уникальным</i>
      */
-    @PutMapping
+    @PostMapping
     public CategoryDto addCategory(@RequestBody @Validated({Create.class}) CategoryDto dto) {
         log.info("Изменение категории {}", dto);
-        //todo implement
-        return null;
+        return service.addCategory(dto);
     }
 
     /**
@@ -49,6 +47,6 @@ public class CategoryAdminController {
     @DeleteMapping("/{catId}")
     public void deleteCategory(@PathVariable(name = "catId") @NotNull Long catId) {
         log.info("Удаление категории {}", catId);
-        //todo implement
+        service.deleteCategory(catId);
     }
 }

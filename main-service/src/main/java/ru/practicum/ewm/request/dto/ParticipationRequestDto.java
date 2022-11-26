@@ -1,13 +1,22 @@
 package ru.practicum.ewm.request.dto;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import ru.practicum.ewm.request.model.RequestStatus;
+
 /**
  * Заявка на участие в событии
  */
+@Getter
+@Setter
+@ToString
+@Builder
 public class ParticipationRequestDto {
-    //022-09-06T21:10:05.432
     private String created;
     private Long event;
     private Long id;
     private Long requester;
-    private String status; //PENDING
+    private String status;
 }
