@@ -20,7 +20,7 @@ public interface StatsRepository extends JpaRepository<Statistic, Long> {
             "from Statistic as s " +
             "where s.createdOn between :start and :end and (coalesce(:uris, null) is null or s.uri in :uris) " +
             "GROUP BY s.uri, s.app")
-    List<ViewStats> getStatsUniqueIp(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end,
+    List<ViewStats> getStats(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end,
                                      @Param("uris") List<String> uris);
 
     @Query("select new ru.practicum.ewm.dto.ViewStats(s.app, s.uri, count(distinct s.ip)) " +
@@ -28,6 +28,6 @@ public interface StatsRepository extends JpaRepository<Statistic, Long> {
             "where s.createdOn between :start and :end " +
             "and (coalesce(:uris, null) is null or s.uri in :uris) " +
             "GROUP BY s.uri, s.app")
-    List<ViewStats> getStats(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end,
+    List<ViewStats> getStatsUniqueIp(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end,
                              @Param("uris") List<String> uris);
 }

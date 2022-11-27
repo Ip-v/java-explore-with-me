@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repository.CategoryRepository;
+import ru.practicum.ewm.client.ClientService;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.EventMapper;
 import ru.practicum.ewm.event.model.EventState;
@@ -33,6 +34,7 @@ import static ru.practicum.ewm.utils.DateFormat.DATE_FORMATTER;
 public class EventAdminServiceImpl implements EventAdminService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
+    private final ClientService statistics;
 
     @Override
     public List<EventFullOutDto> getEvents(Integer[] users, String[] states, Integer[] categories,
@@ -63,7 +65,7 @@ public class EventAdminServiceImpl implements EventAdminService {
 
 
         return eventRepository.findAll(searchCriteria, pageable)
-                .map(EventMapper::toEventFullOutDto)
+                .map(e -> EventMapper.toEventFullOutDto(e, getViews(e.getId())))
                 .toList();
     }
 
@@ -75,7 +77,7 @@ public class EventAdminServiceImpl implements EventAdminService {
         saveChangesToEvent(dto, updated);
         Event save = eventRepository.save(updated);
         log.info("Event id={} successfully updated", eventId);
-        return EventMapper.toEventFullOutDto(save);
+        return EventMapper.toEventFullOutDto(save, getViews(save.getId()));
     }
 
     @Override
@@ -92,7 +94,7 @@ public class EventAdminServiceImpl implements EventAdminService {
 
         Event save = eventRepository.save(event);
         log.info("Event id={} successfully published", eventId);
-        return EventMapper.toEventFullOutDto(save);
+        return EventMapper.toEventFullOutDto(save, getViews(save.getId()));
     }
 
     @Override
@@ -109,7 +111,7 @@ public class EventAdminServiceImpl implements EventAdminService {
         Event save = eventRepository.save(event);
         log.info("Event id={} successfully rejected", eventId);
 
-        return EventMapper.toEventFullOutDto(save);
+        return EventMapper.toEventFullOutDto(save, getViews(save.getId()));
     }
 
     private void saveChangesToEvent(EventFullDto dto, Event update) {
@@ -145,5 +147,9 @@ public class EventAdminServiceImpl implements EventAdminService {
         if (dto.getTitle() != null) {
             update.setTitle(dto.getTitle());
         }
+    }
+
+    private Long getViews(long id) {
+        return statistics.getStats("/events/" + id);
     }
 }

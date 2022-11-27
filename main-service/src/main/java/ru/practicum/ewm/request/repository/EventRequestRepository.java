@@ -15,7 +15,7 @@ import java.util.List;
  */
 @EnableJpaRepositories
 public interface EventRequestRepository extends JpaRepository<Request, Long>, QuerydslPredicateExecutor<Event> {
-    Long countByEventAndConfirmed(Event event, RequestStatus confirmed);
+    int countByEventAndConfirmed(Event event, RequestStatus confirmed);
 
     /**
      * Запрос заявок на участие пользвоателя в чужих событиях

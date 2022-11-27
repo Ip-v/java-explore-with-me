@@ -48,10 +48,10 @@ public class EventPublicController {
                                            @RequestParam(name = "rangeEnd", required = false)
                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                            @RequestParam(name = "onlyAvailable", defaultValue = "false")
-                                               Boolean onlyAvailable,
+                                           Boolean onlyAvailable,
                                            @RequestParam(name = "sort", required = false) SortType sort,
                                            @RequestParam(name = "from", defaultValue = "0")
-                                               @PositiveOrZero Integer from,
+                                           @PositiveOrZero Integer from,
                                            @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size,
                                            HttpServletRequest request) {
         log.info("Получение событий с возможностью фильтрации {}", text);

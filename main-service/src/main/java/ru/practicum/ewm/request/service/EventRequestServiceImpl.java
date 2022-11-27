@@ -50,8 +50,7 @@ public class EventRequestServiceImpl implements EventRequestService {
         if (event.getState() != EventState.PUBLISHED) {
             throw new ConditionsAreNotMetException("Event state should be PUBLISHED");
         }
-        //todo add premoderation check
-        long confirmedRequests = repository.countByEventAndConfirmed(event, RequestStatus.CONFIRMED); //todo wrong status??
+        long confirmedRequests = repository.countByEventAndConfirmed(event, RequestStatus.CONFIRMED);
         if (confirmedRequests >= event.getParticipantLimit()) {
             throw new ConditionsAreNotMetException("Reached participant limit");
         }

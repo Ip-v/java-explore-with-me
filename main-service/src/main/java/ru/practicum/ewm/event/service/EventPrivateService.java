@@ -1,9 +1,5 @@
 package ru.practicum.ewm.event.service;
 
-/**
- * Private API service
- */
-
 import ru.practicum.ewm.event.model.dto.EventFullDto;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
 import ru.practicum.ewm.event.model.dto.EventShortDto;
@@ -11,6 +7,9 @@ import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 
 import java.util.List;
 
+/**
+ * Private API service
+ */
 public interface EventPrivateService {
     /**
      * Получение событий добавленных текущим пользователем

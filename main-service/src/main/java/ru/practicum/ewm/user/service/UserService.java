@@ -4,6 +4,9 @@ import ru.practicum.ewm.user.dto.UserDto;
 
 import java.util.List;
 
+/**
+ * Сервис пользователей
+ */
 public interface UserService {
     /**
      * Получение информации о прользователях<br>

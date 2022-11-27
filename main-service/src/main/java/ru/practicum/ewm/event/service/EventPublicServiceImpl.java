@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.client.ClientService;
 import ru.practicum.ewm.event.model.*;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
 import ru.practicum.ewm.event.repository.EventRepository;
@@ -19,7 +20,9 @@ import ru.practicum.ewm.request.repository.EventRequestRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,6 +31,7 @@ import java.util.List;
 public class EventPublicServiceImpl implements EventPublicService {
     private final EventRepository repository;
     private final EventRequestRepository eventRequestRepository;
+    private final ClientService statistics;
 
     @Override
     public List<EventFullOutDto> getEvents(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart,
@@ -71,14 +75,14 @@ public class EventPublicServiceImpl implements EventPublicService {
         if (sort != null && sort.equals(SortType.EVENT_DATE)) {
             Pageable pageable = PageRequest.of(from / size, size, Sort.by("eventDate").descending());
             return repository.findAll(searchCriteria, pageable)
-                    .map(EventMapper::toEventFullOutDto)
+                    .map(e -> EventMapper.toEventFullOutDto(e, getViews(e.getId())))
                     .toList();
         }
-        //todo add statistics
-        Pageable pageable = PageRequest.of(from / size, size, Sort.by("eventDate").descending());
-        return repository.findAll(searchCriteria, pageable)
-                .map(EventMapper::toEventFullOutDto)
-                .toList();
+        Pageable pageable = PageRequest.of(from / size, size);
+        return repository.findAll(searchCriteria, pageable).stream()
+                .map(e -> EventMapper.toEventFullOutDto(e, getViews(e.getId())))
+                .sorted(Comparator.comparing(EventFullOutDto::getViews))
+                .collect(Collectors.toList());
 
     }
 
@@ -90,13 +94,12 @@ public class EventPublicServiceImpl implements EventPublicService {
         if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new ConditionsAreNotMetException("Event isn't published.");
         }
-        //todo get views from statistics
-        EventFullOutDto out = EventMapper.toEventFullOutDto(event);
+        EventFullOutDto out = EventMapper.toEventFullOutDto(event, getViews(event.getId()));
         out.setConfirmedRequests(eventRequestRepository.countByEventAndConfirmed(event, RequestStatus.CONFIRMED));
         return out;
     }
 
-    private Integer getViews(long id) {
-        return clientService.getStats("/events/" + id);
+    private Long getViews(long id) {
+        return statistics.getStats("/events/" + id);
     }
 }

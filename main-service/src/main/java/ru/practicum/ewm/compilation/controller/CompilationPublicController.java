@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.compilation.dto.CompilationDto;
-import ru.practicum.ewm.compilation.service.CompilationAdminService;
+import ru.practicum.ewm.compilation.service.CompilationPublicService;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 @Validated
 public class CompilationPublicController {
 
-    private final CompilationAdminService service;
+    private final CompilationPublicService service;
 
     /**
      * Поулчение подборок событий

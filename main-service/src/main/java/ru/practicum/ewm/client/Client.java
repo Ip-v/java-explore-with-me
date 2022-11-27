@@ -10,7 +10,10 @@ import ru.practicum.ewm.client.dto.ViewStats;
 
 import java.util.List;
 
-@FeignClient(value = "stats",  url = "${feign.url}")
+/**
+ * Клиент сервера статистики
+ */
+@FeignClient(value = "stats", url = "${feign.url}")
 public interface Client {
     @PostMapping("/hit")
     void hit(@RequestBody EndPointHit hit);

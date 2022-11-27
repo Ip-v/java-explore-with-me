@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repository.CategoryRepository;
+import ru.practicum.ewm.client.ClientService;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.EventMapper;
 import ru.practicum.ewm.event.model.EventState;
@@ -47,6 +48,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final EventRequestRepository eventRequestRepository;
+    private final ClientService statistics;
 
     @Override
     public List<EventShortDto> getEvents(Long userId, Integer from, Integer size) {
@@ -69,10 +71,10 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%s not found", dto.getId())));
 
         if (!userId.equals(update.getInitiator().getId())) {
-            throw new RuntimeException("Access denied"); //todo add exception
+            throw new AccessDeniedException("Access denied");
         }
         if (update.getState() == EventState.PUBLISHED) {
-            throw new ConditionsAreNotMetException("ADD exception"); //todo add exception
+            throw new ConditionsAreNotMetException("ADD exception");
         }
         saveChangesToEvent(dto, update);
         update.setModerationRequired(true);
@@ -80,7 +82,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         Event save = repository.save(update);
         log.info("Event id = {} successfully changed", save.getId());
-        return EventMapper.toEventFullOutDto(save);
+        return EventMapper.toEventFullOutDto(save, getViews(save.getId()));
     }
 
     private void saveChangesToEvent(EventFullDto dto, Event update) {
@@ -91,9 +93,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             Category category = categoryRepository.findById(dto.getCategory()).orElseThrow(() ->
                     new NotFoundException(String.format("Category with id=%s not found.", dto.getId())));
             update.setCategory(category);
-        }
-        if (dto.getConfirmedRequests() != null) {
-            //TODO add field
         }
         if (dto.getCreatedOn() != null) {
             update.setCreatedOn(LocalDateTime.parse(dto.getCreatedOn(), DATE_FORMATTER));
@@ -162,7 +161,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 .build();
         Event save = repository.save(event);
 
-        return EventMapper.toEventFullOutDto(save);
+        return EventMapper.toEventFullOutDto(save, getViews(save.getId()));
     }
 
     @Override
@@ -177,7 +176,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             throw new AccessDeniedException("Access denied");
         }
 
-        return EventMapper.toEventFullOutDto(event);
+        return EventMapper.toEventFullOutDto(event, getViews(eventId));
     }
 
     @Override
@@ -201,7 +200,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         Event save = repository.save(event);
 
         log.info("Event with id={} successfully canceled", eventId);
-        return EventMapper.toEventFullOutDto(save);
+        return EventMapper.toEventFullOutDto(save, getViews(save.getId()));
     }
 
     @Override
@@ -259,7 +258,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     private void rejectAllPendingRequests(Event event) {
         log.info("Participant limit reached for event id = {}. Rehecting all pending requests.", event.getId());
-        eventRequestRepository.rejectAllPendingRequests(event.getId()); //todo check
+        eventRequestRepository.rejectAllPendingRequests(event.getId());
     }
 
     @Override
@@ -282,5 +281,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         Request save = eventRequestRepository.save(request);
         log.info("Request with id={} successfully rejected", reqId);
         return RequestMapper.toParticipantRequestDto(save);
+    }
+
+    private Long getViews(long id) {
+        return statistics.getStats("/events/" + id);
     }
 }

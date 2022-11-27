@@ -12,6 +12,7 @@ import ru.practicum.ewm.utils.Update;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Event full DTO
@@ -23,18 +24,19 @@ import javax.validation.constraints.NotNull;
 @EventDateDelay(groups = {Create.class, Update.class})
 public class EventFullDto {
     @NotEmpty(groups = Create.class)
+    @Size(min = 20, message = "{validation.size.too_short}")
+    @Size(max = 2000, message = "{validation.size.too_long}")
     private String annotation;
     @NotNull(groups = Create.class)
     private Long category;
     private Long confirmedRequests;
-    //Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
     private String createdOn;
+    @Size(min = 20, message = "{validation.size.too_short}")
+    @Size(max = 7000, message = "{validation.size.too_long}")
     private String description;
-    //Дата и время на которые намечено событие (в формате "yyyy-MM-dd HH:mm:ss")
     @NotNull(groups = Create.class)
     private String eventDate;
     private Long id;
-    //@NotNull(groups = Create.class)
     private UserShortDto initiator;
     @NotNull(groups = Create.class)
     private Location location;
@@ -46,6 +48,8 @@ public class EventFullDto {
     private Boolean requestModeration = true;
     private String state;
     @NotNull(groups = Create.class)
+    @Size(min = 3, message = "{validation.size.too_short}")
+    @Size(max = 120, message = "{validation.size.too_long}")
     private String title;
     private Long views;
 }

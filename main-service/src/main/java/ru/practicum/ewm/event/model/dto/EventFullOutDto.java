@@ -18,7 +18,7 @@ import ru.practicum.ewm.user.dto.UserShortDto;
 public class EventFullOutDto {
     private String annotation;
     private Category category;
-    private Long confirmedRequests;
+    private int confirmedRequests;
     private String createdOn;
     private String description;
     private String eventDate;

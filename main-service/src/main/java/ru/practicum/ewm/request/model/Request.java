@@ -7,6 +7,9 @@ import ru.practicum.ewm.user.model.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Запрос на участие в событии
+ */
 @Getter
 @Setter
 @ToString

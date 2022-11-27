@@ -20,7 +20,7 @@ public class EventShortDto {
     private String annotation;
     @NotNull(groups = Create.class)
     private Long category;
-    private Long confirmedRequests;
+    private int confirmedRequests;
     //Дата и время на которые намечено событие (в формате "yyyy-MM-dd HH:mm:ss")
     @NotNull(groups = Create.class)
     private String eventDate;

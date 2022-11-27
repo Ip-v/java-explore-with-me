@@ -61,19 +61,6 @@ public class ErrorHandler {
                 .build();
     }
 
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    public ApiError handleThrowable(final Exception e) {
-//        log.error("500 {}", e.getMessage(), e);
-//        return ApiError.builder()
-//                .errors(createError(e))
-//                .status("INTERNAL_SERVER_ERROR")
-//                .reason("Internal server error")
-//                .message(e.getLocalizedMessage())
-//                .timestamp(LocalDateTime.now().toString())
-//                .build();
-//    }
-
     private String createError(Exception e) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);

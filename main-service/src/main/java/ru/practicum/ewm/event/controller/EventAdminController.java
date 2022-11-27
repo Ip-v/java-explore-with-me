@@ -65,7 +65,6 @@ public class EventAdminController {
     public EventFullOutDto publishEvent(@PathVariable @Positive(message = "The number must be greater then 0")
                                         Long eventId) {
         log.info("Публикация события {}", eventId);
-        //todo add 1 hour validation
         return service.publishEvent(eventId);
     }
 

@@ -62,7 +62,7 @@ public class Event {
     @Transient
     private Long confirmedRequests;
     @OneToMany
-    @JoinColumn(name = "request_id")
+    @JoinColumn(name = "event_id")
     private List<Request> requests = new ArrayList<>();
 
     @Override

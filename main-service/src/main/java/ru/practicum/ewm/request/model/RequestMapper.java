@@ -4,7 +4,13 @@ import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 
 import static ru.practicum.ewm.utils.DateFormat.DATE_FORMATTER;
 
+/**
+ * Request Mapper
+ */
 public class RequestMapper {
+    /**
+     * Request -> ParticipationRequestDto
+     */
     public static ParticipationRequestDto toParticipantRequestDto(Request request) {
         return ParticipationRequestDto.builder()
                 .created(DATE_FORMATTER.format(request.getCreatedOn()))
