@@ -2,7 +2,6 @@ package ru.practicum.ewm.event.service;
 
 import ru.practicum.ewm.event.model.dto.EventFullDto;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
-import ru.practicum.ewm.event.model.dto.EventShortDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +16,7 @@ public interface EventAdminService {
      * <i>Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия</i>
      */
     List<EventFullOutDto> getEvents(Integer[] users, String[] states, Integer[] categories, LocalDateTime rangeStart,
-                                  LocalDateTime rangeEnd, Integer from, Integer size);
+                                    LocalDateTime rangeEnd, Integer from, Integer size);
 
     /**
      * Редактирование события<br>

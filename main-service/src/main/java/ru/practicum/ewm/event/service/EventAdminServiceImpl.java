@@ -15,7 +15,6 @@ import ru.practicum.ewm.event.model.EventState;
 import ru.practicum.ewm.event.model.QEvent;
 import ru.practicum.ewm.event.model.dto.EventFullDto;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
-import ru.practicum.ewm.event.model.dto.EventShortDto;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exceptions.ConditionsAreNotMetException;
 import ru.practicum.ewm.exceptions.NotFoundException;
@@ -37,7 +36,7 @@ public class EventAdminServiceImpl implements EventAdminService {
 
     @Override
     public List<EventFullOutDto> getEvents(Integer[] users, String[] states, Integer[] categories,
-                                         LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
 
         List<BooleanExpression> expression = new ArrayList<>();
         QEvent event = QEvent.event;

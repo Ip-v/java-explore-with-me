@@ -2,8 +2,6 @@ package ru.practicum.ewm.exceptions;
 
 import lombok.*;
 
-import java.util.List;
-
 /**
  * Сведения об ошибке
  */
@@ -15,7 +13,7 @@ import java.util.List;
 @Builder
 public class ApiError {
     //Список стектрейсов или описания ошибок
-    private List<String> errors;
+    private String errors;
     private String message;
     //Общее описание причины ошибки
     private String reason;

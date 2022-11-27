@@ -35,7 +35,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventFullOutDto toEventFullOutDto(Event event) {
+    public static EventFullOutDto toEventFullOutDto(Event event, Long views) {
         return EventFullOutDto.builder()
                 .annotation(event.getAnnotation())
                 .category(event.getCategory())
@@ -71,6 +71,6 @@ public class EventMapper {
     }
 
     public static EventState toEventState(String stateName) {
-            return EventState.valueOf(stateName.toUpperCase(Locale.ROOT));
+        return EventState.valueOf(stateName.toUpperCase(Locale.ROOT));
     }
 }

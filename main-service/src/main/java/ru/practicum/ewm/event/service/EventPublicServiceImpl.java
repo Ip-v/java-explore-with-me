@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.event.model.*;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
-import ru.practicum.ewm.event.model.dto.EventShortDto;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exceptions.ConditionsAreNotMetException;
 import ru.practicum.ewm.exceptions.NotFoundException;
@@ -32,14 +31,14 @@ public class EventPublicServiceImpl implements EventPublicService {
 
     @Override
     public List<EventFullOutDto> getEvents(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart,
-                                         LocalDateTime rangeEnd, Boolean onlyAvailable, SortType sort, Integer from,
-                                         Integer size) {
+                                           LocalDateTime rangeEnd, Boolean onlyAvailable, SortType sort, Integer from,
+                                           Integer size) {
         List<BooleanExpression> expression = new ArrayList<>();
         QEvent event = QEvent.event;
 
         expression.add(event.state.eq(EventState.PUBLISHED)
                 .and(event.eventDate.after((rangeStart == null ? LocalDateTime.now() : rangeStart))));
-        if(text != null) {
+        if (text != null) {
             expression.add(event.annotation.containsIgnoreCase(text)
                     .or(event.description.containsIgnoreCase(text)));
         }
@@ -92,9 +91,12 @@ public class EventPublicServiceImpl implements EventPublicService {
             throw new ConditionsAreNotMetException("Event isn't published.");
         }
         //todo get views from statistics
-        //todo save to statistics
         EventFullOutDto out = EventMapper.toEventFullOutDto(event);
         out.setConfirmedRequests(eventRequestRepository.countByEventAndConfirmed(event, RequestStatus.CONFIRMED));
         return out;
+    }
+
+    private Integer getViews(long id) {
+        return clientService.getStats("/events/" + id);
     }
 }

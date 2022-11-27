@@ -2,7 +2,6 @@ package ru.practicum.ewm.event.service;
 
 import ru.practicum.ewm.event.model.SortType;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
-import ru.practicum.ewm.event.model.dto.EventShortDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,8 +20,8 @@ public interface EventPublicService {
      * информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
      */
     List<EventFullOutDto> getEvents(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart,
-                                  LocalDateTime rangeEnd, Boolean onlyAvailable, SortType sort, Integer from,
-                                  Integer size);
+                                    LocalDateTime rangeEnd, Boolean onlyAvailable, SortType sort, Integer from,
+                                    Integer size);
 
     /**
      * <h3>Получение подробной информации об опубликованном событии по его идентификатору</h3>

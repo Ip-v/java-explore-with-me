@@ -2,10 +2,13 @@ package ru.practicum.ewm.event.model;
 
 import lombok.*;
 import ru.practicum.ewm.category.model.Category;
+import ru.practicum.ewm.request.model.Request;
 import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -58,6 +61,9 @@ public class Event {
     private Long views;
     @Transient
     private Long confirmedRequests;
+    @OneToMany
+    @JoinColumn(name = "request_id")
+    private List<Request> requests = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

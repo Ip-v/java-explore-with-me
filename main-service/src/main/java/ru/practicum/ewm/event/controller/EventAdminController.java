@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.model.dto.EventFullDto;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
-import ru.practicum.ewm.event.model.dto.EventShortDto;
 import ru.practicum.ewm.event.service.EventAdminService;
 
 import javax.validation.constraints.Positive;
@@ -32,14 +31,14 @@ public class EventAdminController {
      */
     @GetMapping
     public List<EventFullOutDto> getEvents(@RequestParam(name = "users", required = false) Integer[] users,
-                                         @RequestParam(name = "states", required = false) String[] states,
-                                         @RequestParam(name = "categories", required = false) Integer[] categories,
-                                         @RequestParam(name = "rangeStart", required = false)
-                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-                                         @RequestParam(name = "rangeEnd", required = false)
-                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-                                         @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                         @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                           @RequestParam(name = "states", required = false) String[] states,
+                                           @RequestParam(name = "categories", required = false) Integer[] categories,
+                                           @RequestParam(name = "rangeStart", required = false)
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                           @RequestParam(name = "rangeEnd", required = false)
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                           @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                           @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Поиск событий по users {} states {} categories {} rangeStart {} rangeEnd {} from {} size {}",
                 users, states, categories, rangeStart, rangeEnd, from, size);
         return service.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
@@ -51,7 +50,8 @@ public class EventAdminController {
      */
     @PutMapping("/{eventId}")
     public EventFullOutDto updateEvent(@RequestBody EventFullDto dto,
-                                       @PathVariable @Positive(message = "The number must be greater then 0") Long eventId) {
+                                       @PathVariable @Positive(message = "The number must be greater then 0")
+                                       Long eventId) {
         log.info("Редактирование события {} -> {}", eventId, dto);
         return service.updateEvent(dto, eventId);
     }

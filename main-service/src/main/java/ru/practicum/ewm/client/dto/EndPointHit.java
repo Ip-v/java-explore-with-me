@@ -1,12 +1,12 @@
-package ru.practicum.ewm.dto;
+package ru.practicum.ewm.client.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@Builder
 public class EndPointHit {
     private Long id;
     private String app;
