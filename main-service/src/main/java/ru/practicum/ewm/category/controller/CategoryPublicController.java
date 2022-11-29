@@ -28,6 +28,7 @@ public class CategoryPublicController {
     public List<CategoryDto> getAll(@RequestParam(name = "from", defaultValue = "10") Integer from,
                                     @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Запрос списка категорий from {} size {}", from, size);
+
         return service.getAll(from, size);
     }
 
@@ -37,6 +38,7 @@ public class CategoryPublicController {
     @GetMapping("/{catId}")
     public CategoryDto getById(@PathVariable(name = "catId") @NotNull Long catId) {
         log.info("Запрос категорий по ИД {}", catId);
+
         return service.getById(catId);
     }
 }

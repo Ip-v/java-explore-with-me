@@ -34,13 +34,14 @@ public class EventAdminController {
                                         @RequestParam(name = "states", required = false) String[] states,
                                         @RequestParam(name = "categories", required = false) Integer[] categories,
                                         @RequestParam(name = "rangeStart", required = false)
-                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                         @RequestParam(name = "rangeEnd", required = false)
-                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                         @RequestParam(name = "from", defaultValue = "0") Integer from,
                                         @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Поиск событий по users {} states {} categories {} rangeStart {} rangeEnd {} from {} size {}",
                 users, states, categories, rangeStart, rangeEnd, from, size);
+
         return service.getAll(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
@@ -51,8 +52,9 @@ public class EventAdminController {
     @PutMapping("/{eventId}")
     public EventFullOutDto update(@RequestBody EventFullDto dto,
                                   @PathVariable @Positive(message = "The number must be greater then 0")
-                                       Long eventId) {
+                                  Long eventId) {
         log.info("Редактирование события {} -> {}", eventId, dto);
+
         return service.update(dto, eventId);
     }
 
@@ -63,8 +65,9 @@ public class EventAdminController {
      */
     @PatchMapping("/{eventId}/publish")
     public EventFullOutDto publish(@PathVariable @Positive(message = "The number must be greater then 0")
-                                        Long eventId) {
+                                   Long eventId) {
         log.info("Публикация события {}", eventId);
+
         return service.publish(eventId);
     }
 
@@ -74,8 +77,9 @@ public class EventAdminController {
      */
     @PatchMapping("/{eventId}/reject")
     public EventFullOutDto reject(@PathVariable @Positive(message = "The number must be greater then 0")
-                                       Long eventId) {
+                                  Long eventId) {
         log.info("Отклонение события {}", eventId);
+
         return service.reject(eventId);
     }
 }

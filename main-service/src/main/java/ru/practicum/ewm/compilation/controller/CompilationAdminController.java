@@ -27,6 +27,7 @@ public class CompilationAdminController {
     @PostMapping
     public CompilationDto add(@RequestBody @Validated({Create.class}) NewCompilationDto dto) {
         log.info("Added new compilation {}", dto);
+
         return service.add(dto);
     }
 

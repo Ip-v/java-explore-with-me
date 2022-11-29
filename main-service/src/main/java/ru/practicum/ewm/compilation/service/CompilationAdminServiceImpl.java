@@ -40,6 +40,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
         Compilation save = repository.save(compilation);
         log.info("Compilation id={} successfully", save.getId());
+
         return CompilationMapper.toCompilationDto(save);
     }
 

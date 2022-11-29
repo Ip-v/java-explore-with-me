@@ -31,10 +31,11 @@ public class EventPrivateController {
      */
     @GetMapping
     public List<EventShortDto> getAll(@PathVariable @Positive(message = "The number must be greater then 0")
-                                         Long userId,
+                                      Long userId,
                                       @RequestParam(name = "from", defaultValue = "0") Integer from,
                                       @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получение событий добавленных пользователем {} from {} size {}", userId, from, size);
+
         return service.getAll(userId, from, size);
     }
 
@@ -43,8 +44,9 @@ public class EventPrivateController {
      */
     @PatchMapping
     public EventFullOutDto change(@PathVariable @Positive(message = "The number must be greater then 0")
-                                       Long userId, @RequestBody @Validated({Update.class}) EventFullDto dto) {
+                                  Long userId, @RequestBody @Validated({Update.class}) EventFullDto dto) {
         log.info("Запрос изменения события добавленного пользователем {}, новые данные {}", userId, dto);
+
         return service.change(userId, dto);
     }
 
@@ -56,6 +58,7 @@ public class EventPrivateController {
     public EventFullOutDto add(@PathVariable @Positive(message = "The number must be greater then 0") Long userId,
                                @RequestBody @Validated({Create.class}) EventFullDto dto) {
         log.info("Запрос добавления нового события пользователем {}, {}", userId, dto);
+
         return service.add(userId, dto);
     }
 
@@ -66,6 +69,7 @@ public class EventPrivateController {
     public EventFullOutDto getById(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
                                    @PathVariable @Positive(message = "The number must be > then 0") Long eventId) {
         log.info("Получение полной информации о событии {} добавленном текущим пользователем {}", userId, eventId);
+
         return service.getById(userId, eventId);
     }
 
@@ -78,6 +82,7 @@ public class EventPrivateController {
     public EventFullOutDto cancel(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
                                   @PathVariable @Positive(message = "The number must be > then 0") Long eventId) {
         log.info("Отмена события {} добавленного текущим пользователем {}", eventId, userId);
+
         return service.cancel(userId, eventId);
     }
 
@@ -88,6 +93,7 @@ public class EventPrivateController {
     public List<ParticipationRequestDto> getRequests(@PathVariable @Positive(message = "The number must be > then 0") Long userId,
                                                      @PathVariable @Positive(message = "The number must be > then 0") Long eventId) {
         log.info("Получение информации о запросах на участие в событии {} пользователя {}", eventId, userId);
+
         return service.getRequests(userId, eventId);
     }
 
@@ -99,12 +105,13 @@ public class EventPrivateController {
      */
     @PatchMapping("/{eventId}/requests/{reqId}/confirm")
     public ParticipationRequestDto confirm(@PathVariable @Positive(message = "The number must be > then 0")
-                                                  Long userId,
+                                           Long userId,
                                            @PathVariable @Positive(message = "The number must be > then 0")
-                                                  Long eventId,
+                                           Long eventId,
                                            @PathVariable @Positive(message = "The number must be > then 0")
-                                                  Long reqId) {
+                                           Long reqId) {
         log.info("Подтверждение заявки {} на участие в событии {} пользователем {}", reqId, eventId, userId);
+
         return service.confirm(userId, eventId, reqId);
     }
 
@@ -113,12 +120,13 @@ public class EventPrivateController {
      */
     @PatchMapping("/{eventId}/requests/{reqId}/reject")
     public ParticipationRequestDto reject(@PathVariable @Positive(message = "The number must be > then 0")
-                                                 Long userId,
+                                          Long userId,
                                           @PathVariable @Positive(message = "The number must be > then 0")
-                                                 Long eventId,
+                                          Long eventId,
                                           @PathVariable @Positive(message = "The number must be > then 0")
-                                                 Long reqId) {
+                                          Long reqId) {
         log.info("Отклонение заявки {} на участие в событии {} пользователем {}", reqId, eventId, userId);
+
         return service.reject(userId, eventId, reqId);
     }
 }

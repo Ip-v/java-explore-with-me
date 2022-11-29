@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.dto.UserMapper;
 import ru.practicum.ewm.user.model.User;
@@ -30,8 +31,10 @@ public class UserServiceImpl implements UserService {
         } else {
             int page = from / size;
             Pageable pageRequest = PageRequest.of(page, size);
-            repository.findAll(pageRequest).forEach(u -> users.add(UserMapper.toUserDto(u)));
+            repository.findAll(pageRequest)
+                    .forEach(u -> users.add(UserMapper.toUserDto(u)));
         }
+
         return users;
     }
 
@@ -40,12 +43,16 @@ public class UserServiceImpl implements UserService {
     public UserDto add(UserDto dto) {
         final User user = UserMapper.toUser(dto);
         final User save = repository.save(user);
+
         return UserMapper.toUserDto(save);
     }
 
     @Override
     @Transactional
     public void delete(Long userId) {
+        if (!repository.existsById(userId)) {
+            throw new NotFoundException(String.format("User with id=%s not found", userId));
+        }
         repository.deleteById(userId);
     }
 }

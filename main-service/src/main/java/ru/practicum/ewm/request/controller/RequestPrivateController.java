@@ -24,8 +24,9 @@ public class RequestPrivateController {
      */
     @GetMapping
     public List<ParticipationRequestDto> getAll(@PathVariable @Positive(message = "The number must be > then 0")
-                                                     Long userId) {
+                                                Long userId) {
         log.info("Получение информации о заявках пользователя {} на участие в чужих событиях", userId);
+
         return service.getAll(userId);
     }
 
@@ -39,8 +40,9 @@ public class RequestPrivateController {
      */
     @PostMapping
     public ParticipationRequestDto add(@PathVariable @Positive(message = "The number must be > then 0")
-                                              Long userId, @RequestParam @Positive Long eventId) {
+                                       Long userId, @RequestParam @Positive Long eventId) {
         log.info("Добавление запроса от пользователя {} на участие в событии {}", userId, eventId);
+
         return service.add(userId, eventId);
     }
 
@@ -49,9 +51,9 @@ public class RequestPrivateController {
      */
     @PatchMapping("/{requestId}/cancel")
     public ParticipationRequestDto cancel(@PathVariable @Positive(message = "The number must be > then 0")
-                                                 Long userId,
+                                          Long userId,
                                           @PathVariable @Positive(message = "The number must be > then 0")
-                                                 Long requestId) {
+                                          Long requestId) {
         log.info("Отмена своего запроса {} пользователем {} на участие в событии", requestId, userId);
 
         return service.cancel(requestId, userId);

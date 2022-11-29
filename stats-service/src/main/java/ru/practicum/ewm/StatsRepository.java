@@ -16,17 +16,17 @@ import java.util.List;
 @Repository
 public interface StatsRepository extends JpaRepository<Statistic, Long> {
 
-    @Query("select new ru.practicum.ewm.dto.ViewStats(s.app, s.uri, count(s.ip)) " +
-            "from Statistic as s " +
-            "where s.createdOn between :start and :end and (coalesce(:uris, null) is null or s.uri in :uris) " +
+    @Query("SELECT new ru.practicum.ewm.dto.ViewStats(s.app, s.uri, COUNT(s.ip)) " +
+            "FROM Statistic AS s " +
+            "WHERE s.createdOn BETWEEN :start AND :end AND (COALESCE(:uris, NULL) IS NULL OR s.uri IN :uris) " +
             "GROUP BY s.uri, s.app")
     List<ViewStats> getStats(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end,
                                      @Param("uris") List<String> uris);
 
-    @Query("select new ru.practicum.ewm.dto.ViewStats(s.app, s.uri, count(distinct s.ip)) " +
-            "from Statistic as s " +
-            "where s.createdOn between :start and :end " +
-            "and (coalesce(:uris, null) is null or s.uri in :uris) " +
+    @Query("SELECT new ru.practicum.ewm.dto.ViewStats(s.app, s.uri, COUNT (DISTINCT s.ip)) " +
+            "FROM Statistic AS s " +
+            "WHERE s.createdOn BETWEEN :start AND :end " +
+            "AND (COALESCE(:uris, NULL) IS NULL OR s.uri IN :uris) " +
             "GROUP BY s.uri, s.app")
     List<ViewStats> getStatsUniqueIp(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end,
                              @Param("uris") List<String> uris);

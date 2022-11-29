@@ -12,21 +12,21 @@ import ru.practicum.ewm.category.repository.CategoryRepository;
 import ru.practicum.ewm.client.ClientService;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.EventMapper;
-import ru.practicum.ewm.event.model.EventState;
 import ru.practicum.ewm.event.model.QEvent;
 import ru.practicum.ewm.event.model.dto.EventFullDto;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exceptions.ConditionsAreNotMetException;
 import ru.practicum.ewm.exceptions.NotFoundException;
+import ru.practicum.ewm.utils.State;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static ru.practicum.ewm.event.model.EventState.*;
 import static ru.practicum.ewm.utils.DateFormat.DATE_FORMATTER;
+import static ru.practicum.ewm.utils.State.*;
 
 @Slf4j
 @Service
@@ -48,7 +48,7 @@ public class EventAdminServiceImpl implements EventAdminService {
             expression.add(event.initiator.id.in(users));
         }
         if (states != null) {
-            EventState[] eventStates = Arrays.stream(states).map(EventMapper::toEventState).toArray(EventState[]::new);
+            State[] eventStates = Arrays.stream(states).map(EventMapper::toEventState).toArray(State[]::new);
             expression.add(event.state.in(eventStates));
         }
         if (categories != null) {
@@ -64,7 +64,6 @@ public class EventAdminServiceImpl implements EventAdminService {
         BooleanExpression searchCriteria = expression.stream().reduce(BooleanExpression::and).get();
         Pageable pageable = PageRequest.of(from / size, size);
 
-
         return eventRepository.findAll(searchCriteria, pageable)
                 .map(e -> EventMapper.toEventFullOutDto(e, getViews(e.getId())))
                 .toList();
@@ -78,6 +77,7 @@ public class EventAdminServiceImpl implements EventAdminService {
         saveChangesToEvent(dto, updated);
         Event save = eventRepository.save(updated);
         log.info("Event id={} successfully updated", eventId);
+
         return EventMapper.toEventFullOutDto(save, getViews(save.getId()));
     }
 
@@ -95,6 +95,7 @@ public class EventAdminServiceImpl implements EventAdminService {
 
         Event save = eventRepository.save(event);
         log.info("Event id={} successfully published", eventId);
+
         return EventMapper.toEventFullOutDto(save, getViews(save.getId()));
     }
 

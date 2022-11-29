@@ -28,11 +28,20 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
     @Override
     public List<CompilationDto> getAll(Boolean pinned, Integer from, Integer size) {
         Pageable pageRequest = PageRequest.of(from / size, size);
-        List<Compilation> list = pinned == null ? repository.findAll(pageRequest).getContent()
-                : pinned ? repository.findCompilationsByPinnedTrue(pageRequest)
-                : repository.findCompilationsByPinnedFalse(pageRequest);
+        List<Compilation> list;
+        if (pinned == null) {
+            list = repository.findAll(pageRequest).getContent();
+        } else if (pinned) {
+            list = repository.findCompilationsByPinnedTrue(pageRequest);
+        } else {
+            list = repository.findCompilationsByPinnedFalse(pageRequest);
+        }
         log.info("Compilations found {} successfully found", list.size());
-        return list.stream().map(CompilationMapper::toCompilationDto).collect(Collectors.toList());
+
+        return list
+                .stream()
+                .map(CompilationMapper::toCompilationDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -40,6 +49,7 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
         Compilation compilation = repository.findById(compId)
                 .orElseThrow(() -> new NotFoundException(String.format("Compilation %d not found", compId)));
         log.info("Compilation {} successfully found", compId);
+
         return CompilationMapper.toCompilationDto(compilation);
     }
 }

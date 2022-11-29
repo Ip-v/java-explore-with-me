@@ -19,9 +19,9 @@ public class Compilation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "compilation_id")
     private Long id;
-    @Column
+    @Column(name = "pinned")
     private Boolean pinned;
-    @Column
+    @Column(name = "title")
     private String title;
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(

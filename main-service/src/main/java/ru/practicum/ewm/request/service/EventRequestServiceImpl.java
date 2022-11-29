@@ -5,14 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.event.model.Event;
-import ru.practicum.ewm.event.model.EventState;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exceptions.ConditionsAreNotMetException;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.request.model.Request;
 import ru.practicum.ewm.request.model.RequestMapper;
-import ru.practicum.ewm.request.model.RequestStatus;
 import ru.practicum.ewm.request.repository.EventRequestRepository;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
@@ -20,6 +18,8 @@ import ru.practicum.ewm.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.practicum.ewm.utils.State.*;
 
 /**
  * Контроллер запросов
@@ -36,7 +36,6 @@ public class EventRequestServiceImpl implements EventRequestService {
     @Override
     @Transactional
     public ParticipationRequestDto add(Long userId, Long eventId) {
-
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id=%s not found", userId)));
 
@@ -47,10 +46,10 @@ public class EventRequestServiceImpl implements EventRequestService {
             throw new ConditionsAreNotMetException("User cannot add create request to owned event");
         }
 
-        if (event.getState() != EventState.PUBLISHED) {
+        if (event.getState() != PUBLISHED) {
             throw new ConditionsAreNotMetException("Event state should be PUBLISHED");
         }
-        long confirmedRequests = repository.countByEventAndConfirmed(event, RequestStatus.CONFIRMED);
+        long confirmedRequests = repository.countByEventAndConfirmed(event, CONFIRMED);
         if (confirmedRequests >= event.getParticipantLimit()) {
             throw new ConditionsAreNotMetException("Reached participant limit");
         }
@@ -58,20 +57,23 @@ public class EventRequestServiceImpl implements EventRequestService {
         Request request = Request.builder()
                 .user(user)
                 .event(event)
-                .confirmed(RequestStatus.PENDING)
+                .confirmed(PENDING)
                 .createdOn(LocalDateTime.now())
                 .build();
         Request save = repository.save(request);
 
         log.info("User {} request for event {} successfully created", userId, eventId);
+
         return RequestMapper.toParticipantRequestDto(save);
     }
 
     @Override
     public List<ParticipationRequestDto> getAll(Long userId) {
-        userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException(String.format("User with id=%s not found", userId)));
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException(String.format("User with id=%s not found", userId));
+        }
         log.debug("Query all user {} request from db", userId);
+
         return repository.getAllUserRequests(userId)
                 .stream()
                 .map(RequestMapper::toParticipantRequestDto)
@@ -81,14 +83,16 @@ public class EventRequestServiceImpl implements EventRequestService {
     @Override
     @Transactional
     public ParticipationRequestDto cancel(Long requestId, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException(String.format("User with id=%s not found", userId)));
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException(String.format("User with id=%s not found", userId));
+        }
         Request request = repository.findById(requestId).orElseThrow(() ->
                 new NotFoundException(String.format("Request with id=%s not found", requestId)));
 
-        request.setConfirmed(RequestStatus.CANCELED);
+        request.setConfirmed(CANCELED);
         Request save = repository.save(request);
         log.info("Request id={} successfully CANCELED", requestId);
+
         return RequestMapper.toParticipantRequestDto(save);
     }
 }

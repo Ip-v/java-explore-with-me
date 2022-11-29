@@ -30,6 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
                 new NotFoundException(String.format("Category with id=%s was not found.", dto.getId())));
         cat.setName(dto.getName());
         Category save = repository.save(cat);
+
         return CategoryMapper.toCategoryDto(save);
     }
 
@@ -37,14 +38,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryDto add(CategoryDto dto) {
         Category category = repository.save(CategoryMapper.toCategory(dto));
+
         return CategoryMapper.toCategoryDto(category);
     }
 
     @Override
     @Transactional
     public void delete(Long catId) {
-        Category cat = repository.findById(catId).orElseThrow(() ->
-                new NotFoundException(String.format("Category with id=%s was not found.", catId)));
+        if (!repository.existsById(catId)) {
+            throw new NotFoundException(String.format("Category with id=%s was not found.", catId));
+        }
         repository.deleteById(catId);
     }
 
@@ -52,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDto> getAll(Integer from, Integer size) {
         int page = from / size;
         Pageable pageRequest = PageRequest.of(page, size);
+
         return repository.findAll(pageRequest)
                 .stream()
                 .map(CategoryMapper::toCategoryDto)
@@ -62,6 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto getById(Long catId) {
         Category cat = repository.findById(catId).orElseThrow(() ->
                 new NotFoundException(String.format("Category with id=%s was not found.", catId)));
+
         return CategoryMapper.toCategoryDto(cat);
     }
 }

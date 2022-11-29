@@ -23,7 +23,8 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError notFound(final NotFoundException e) {
-        log.error("404 {}", e.getMessage());
+        log.error("404 {}", e.getMessage(), e);
+
         return ApiError.builder()
                 .errors(createError(e))
                 .status("NOT_FOUND")
@@ -37,7 +38,8 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError dataConflict(final DataIntegrityViolationException e) {
-        log.error("409 {}", e.getMessage());
+        log.error("409 {}", e.getMessage(), e);
+
         return ApiError.builder()
                 .errors(createError(e))
                 .status("CONFLICT")
@@ -51,7 +53,8 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError dataConflict(final IllegalArgumentException e) {
-        log.error("400 {}", e.getMessage());
+        log.error("400 {}", e.getMessage(), e);
+
         return ApiError.builder()
                 .errors(createError(e))
                 .status("BAD_REQUEST")
@@ -61,10 +64,41 @@ public class ErrorHandler {
                 .build();
     }
 
+    //ConditionsAreNotMetException
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiError conditionsAreNotMetException(final ConditionsAreNotMetException e) {
+        log.error("403 {}", e.getMessage(), e);
+
+        return ApiError.builder()
+                .errors(createError(e))
+                .status("FORBIDDEN")
+                .reason("For the requested operation the conditions are not met.")
+                .message(e.getLocalizedMessage())
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+    }
+
+    //AccessDeniedException
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiError accessDenied(final AccessDeniedException e) {
+        log.error("403 {}", e.getMessage(), e);
+
+        return ApiError.builder()
+                .errors(createError(e))
+                .status("FORBIDDEN")
+                .reason("For the requested operation the conditions are not met.")
+                .message(e.getLocalizedMessage())
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+    }
+
     private String createError(Exception e) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
+
         return sw.toString();
     }
 }

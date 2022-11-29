@@ -16,6 +16,7 @@ public class EventDateDelayValidator implements ConstraintValidator<EventDateDel
     @Override
     public boolean isValid(final EventFullDto e, final ConstraintValidatorContext context) {
         LocalDateTime eventDate = LocalDateTime.parse(e.getEventDate(), DATE_FORMATTER);
+
         return ChronoUnit.HOURS.between(LocalDateTime.now(), eventDate) >= 2;
     }
 }

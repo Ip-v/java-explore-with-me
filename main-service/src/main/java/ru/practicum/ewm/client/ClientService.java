@@ -37,6 +37,7 @@ public class ClientService {
         String end = LocalDateTime.now().plusYears(1).format(DATE_FORMATTER);
         List<ViewStats> views = client.getStats(start, end, List.of(uri), false);
         log.info("Retrieving statistic for uri={}", uri);
+
         return views != null && views.size() > 0 ? views.get(0).getHits() : 0L;
     }
 }

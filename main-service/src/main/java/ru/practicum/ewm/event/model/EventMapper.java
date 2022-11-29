@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
 import ru.practicum.ewm.event.model.dto.EventShortDto;
 import ru.practicum.ewm.user.dto.UserMapper;
+import ru.practicum.ewm.utils.State;
 
 import java.util.Locale;
 
@@ -48,7 +49,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventState toEventState(String stateName) {
-        return EventState.valueOf(stateName.toUpperCase(Locale.ROOT));
+    public static State toEventState(String stateName) {
+        return State.valueOf(stateName.toUpperCase(Locale.ROOT));
     }
 }

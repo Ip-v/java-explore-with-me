@@ -3,6 +3,7 @@ package ru.practicum.ewm.request.model;
 import lombok.*;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.user.model.User;
+import ru.practicum.ewm.utils.State;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,9 +30,9 @@ public class Request {
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
-    @Column
+    @Column(name = "confirmed")
     @Enumerated(EnumType.STRING)
-    private RequestStatus confirmed;
+    private State confirmed;
     @Column(name = "created_on")
     private LocalDateTime createdOn;
 }

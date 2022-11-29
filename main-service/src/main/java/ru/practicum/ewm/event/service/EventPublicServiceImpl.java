@@ -9,13 +9,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.client.ClientService;
-import ru.practicum.ewm.event.model.*;
+import ru.practicum.ewm.event.model.Event;
+import ru.practicum.ewm.event.model.EventMapper;
+import ru.practicum.ewm.event.model.QEvent;
+import ru.practicum.ewm.event.model.SortType;
 import ru.practicum.ewm.event.model.dto.EventFullOutDto;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.exceptions.ConditionsAreNotMetException;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.request.model.QRequest;
-import ru.practicum.ewm.request.model.RequestStatus;
 import ru.practicum.ewm.request.repository.EventRequestRepository;
 
 import java.time.LocalDateTime;
@@ -23,6 +25,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.practicum.ewm.utils.State.CONFIRMED;
+import static ru.practicum.ewm.utils.State.PUBLISHED;
 
 @Slf4j
 @Service
@@ -40,7 +45,7 @@ public class EventPublicServiceImpl implements EventPublicService {
         List<BooleanExpression> expression = new ArrayList<>();
         QEvent event = QEvent.event;
 
-        expression.add(event.state.eq(EventState.PUBLISHED)
+        expression.add(event.state.eq(PUBLISHED)
                 .and(event.eventDate.after((rangeStart == null ? LocalDateTime.now() : rangeStart))));
         if (text != null) {
             expression.add(event.annotation.containsIgnoreCase(text)
@@ -66,7 +71,7 @@ public class EventPublicServiceImpl implements EventPublicService {
             expression.add(noModerationRequired);
 
             BooleanExpression moderationRequired = event.moderationRequired.eq(true)
-                    .and(event.participantLimit.goe(request.confirmed.eq(RequestStatus.CONFIRMED).count()));
+                    .and(event.participantLimit.goe(request.confirmed.eq(CONFIRMED).count()));
             expression.add(moderationRequired);
         }
 
@@ -79,6 +84,8 @@ public class EventPublicServiceImpl implements EventPublicService {
                     .toList();
         }
         Pageable pageable = PageRequest.of(from / size, size);
+        log.info("Event list requst with filter");
+
         return repository.findAll(searchCriteria, pageable).stream()
                 .map(e -> EventMapper.toEventFullOutDto(e, getViews(e.getId())))
                 .sorted(Comparator.comparing(EventFullOutDto::getViews))
@@ -91,11 +98,13 @@ public class EventPublicServiceImpl implements EventPublicService {
         Event event = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%s not found", id)));
 
-        if (!event.getState().equals(EventState.PUBLISHED)) {
+        if (!event.getState().equals(PUBLISHED)) {
             throw new ConditionsAreNotMetException("Event isn't published.");
         }
         EventFullOutDto out = EventMapper.toEventFullOutDto(event, getViews(event.getId()));
-        out.setConfirmedRequests(eventRequestRepository.countByEventAndConfirmed(event, RequestStatus.CONFIRMED));
+        out.setConfirmedRequests(eventRequestRepository.countByEventAndConfirmed(event, CONFIRMED));
+        log.info("Event requst by id {}", id);
+
         return out;
     }
 

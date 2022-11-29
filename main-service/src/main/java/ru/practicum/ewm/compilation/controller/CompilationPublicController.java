@@ -30,6 +30,7 @@ public class CompilationPublicController {
                                        @RequestParam(name = "from", defaultValue = "0") Integer from,
                                        @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Запрос подборки pinned {} from {} size {}", pinned, from, size);
+
         return service.getAll(pinned, from, size);
     }
 
@@ -39,6 +40,7 @@ public class CompilationPublicController {
     @GetMapping("/{compId}")
     public CompilationDto getCompilationById(@PathVariable(name = "compId") @NotNull Long compId) {
         log.info("Запрос подборки по ид {}", compId);
+
         return service.getById(compId);
     }
 }

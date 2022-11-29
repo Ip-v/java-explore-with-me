@@ -43,6 +43,7 @@ public class UserAdminController {
     @PostMapping
     public UserDto add(@RequestBody @Valid UserDto dto) {
         log.info("Добавление нового пользователия {}", dto);
+
         return service.add(dto);
     }
 

@@ -44,18 +44,19 @@ public class EventPublicController {
                                         @RequestParam(name = "categories", required = false) Integer[] categories,
                                         @RequestParam(name = "paid", required = false) Boolean paid,
                                         @RequestParam(name = "rangeStart", required = false)
-                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                         @RequestParam(name = "rangeEnd", required = false)
-                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                         @RequestParam(name = "onlyAvailable", defaultValue = "false")
-                                           Boolean onlyAvailable,
+                                        Boolean onlyAvailable,
                                         @RequestParam(name = "sort", required = false) SortType sort,
                                         @RequestParam(name = "from", defaultValue = "0")
-                                           @PositiveOrZero Integer from,
+                                        @PositiveOrZero Integer from,
                                         @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size,
                                         HttpServletRequest request) {
         log.info("Получение событий с возможностью фильтрации {}", text);
         statistics.hit(request.getRequestURI(), request.getRemoteAddr());
+
         return service.getAll(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
@@ -69,6 +70,7 @@ public class EventPublicController {
     public EventFullOutDto getById(@PathVariable(name = "id") Long id, HttpServletRequest request) {
         log.info("Получение события по id = {}", id);
         statistics.hit(request.getRequestURI(), request.getRemoteAddr());
+
         return service.getById(id);
     }
 }

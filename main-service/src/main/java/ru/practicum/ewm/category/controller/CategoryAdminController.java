@@ -28,6 +28,7 @@ public class CategoryAdminController {
     @PatchMapping
     public CategoryDto update(@RequestBody @Validated({Update.class}) CategoryDto dto) {
         log.info("Изменение категории {}", dto);
+
         return service.update(dto);
     }
 
@@ -38,6 +39,7 @@ public class CategoryAdminController {
     @PostMapping
     public CategoryDto add(@RequestBody @Validated({Create.class}) CategoryDto dto) {
         log.info("Изменение категории {}", dto);
+
         return service.add(dto);
     }
 
@@ -47,6 +49,7 @@ public class CategoryAdminController {
     @DeleteMapping("/{catId}")
     public void delete(@PathVariable(name = "catId") @NotNull Long catId) {
         log.info("Удаление категории {}", catId);
+
         service.delete(catId);
     }
 }

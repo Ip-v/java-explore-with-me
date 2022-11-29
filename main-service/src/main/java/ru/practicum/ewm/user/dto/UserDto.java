@@ -20,7 +20,6 @@ public class UserDto {
     @NotNull
     @Email
     private String email;
-    //readonly = true
     private Long id;
     @NotEmpty
     private String name;
