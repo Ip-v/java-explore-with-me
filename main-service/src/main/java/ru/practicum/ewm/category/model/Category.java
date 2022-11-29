@@ -1,10 +1,8 @@
 package ru.practicum.ewm.category.model;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -17,8 +15,8 @@ import javax.validation.constraints.NotNull;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
+    @Column(name = "category_id", nullable = false)
     private Long id;
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 }

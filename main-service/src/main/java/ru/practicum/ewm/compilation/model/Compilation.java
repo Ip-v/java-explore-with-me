@@ -17,11 +17,11 @@ import java.util.List;
 public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "compilation_id")
+    @Column(name = "compilation_id", nullable = false)
     private Long id;
     @Column(name = "pinned")
     private Boolean pinned;
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, length = 200)
     private String title;
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(

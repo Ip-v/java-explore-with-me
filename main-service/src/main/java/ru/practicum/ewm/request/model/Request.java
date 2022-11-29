@@ -22,15 +22,15 @@ import java.time.LocalDateTime;
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "request_id")
+    @Column(name = "request_id", nullable = false)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @ManyToOne
-    @JoinColumn(name = "event_id")
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
-    @Column(name = "confirmed")
+    @Column(name = "confirmed", nullable = false, length = 64)
     @Enumerated(EnumType.STRING)
     private State confirmed;
     @Column(name = "created_on")

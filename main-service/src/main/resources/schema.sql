@@ -23,7 +23,7 @@ CREATE TABLE locations
         CONSTRAINT locations_pk
             PRIMARY KEY,
     longitude   DOUBLE PRECISION NOT NULL,
-    latitude    double precision NOT NULL
+    latitude    DOUBLE precision NOT NULL
 );
 
 CREATE TABLE compilations

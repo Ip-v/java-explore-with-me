@@ -23,45 +23,45 @@ import java.util.List;
 @Entity
 @Table(name = "events")
 public class Event {
+    @OneToMany
+    @JoinColumn(name = "event_id")
+    private final List<Request> requests = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "event_id")
+    @Column(name = "event_id", nullable = false)
     private Long id;
-    @Column(name = "annotation")
+    @Column(name = "annotation", nullable = false, length = 2000)
     private String annotation;
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-    @Column
+    @Column(name = "description", nullable = false, length = 7000)
     private String description;
-    @Column(name = "event_date")
+    @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
     @ManyToOne
-    @JoinColumn(name = "location_id")
+    @JoinColumn(name = "location_id", nullable = false)
     private Location location;
-    @Column(name = "paid")
+    @Column(name = "paid", nullable = false)
     private Boolean paid;
-    @Column(name = "participant_limit")
+    @Column(name = "participant_limit", nullable = false)
     private Integer participantLimit;
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, length = 120)
     private String title;
     @ManyToOne
-    @JoinColumn(name = "initiator_id")
+    @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
-    @Column(name = "created_on")
+    @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;
     @Column(name = "published_on")
     private LocalDateTime publishedOn;
-    @Column(name = "request_moderation")
+    @Column(name = "request_moderation", nullable = false)
     private Boolean moderationRequired;
-    @Column(name = "state")
+    @Column(name = "state", nullable = false, length = 64)
     @Enumerated(EnumType.STRING)
     private State state;
     @Transient
     private Long views;
     @Transient
     private Long confirmedRequests;
-    @OneToMany
-    @JoinColumn(name = "event_id")
-    private final List<Request> requests = new ArrayList<>();
 }

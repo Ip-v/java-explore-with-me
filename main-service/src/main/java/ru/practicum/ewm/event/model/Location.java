@@ -18,10 +18,10 @@ import javax.persistence.*;
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "location_id")
+    @Column(name = "location_id", nullable = false)
     private Long id;
-    @Column(name = "latitude")
+    @Column(name = "latitude", nullable = false)
     private double lat;
-    @Column(name = "longitude")
+    @Column(name = "longitude", nullable = false)
     private double lon;
 }
