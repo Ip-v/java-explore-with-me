@@ -19,9 +19,9 @@ public interface EventPublicService {
      * информация о каждом событии должна включать в себя количество просмотров и количество уже одобренных заявок на участие
      * информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
      */
-    List<EventFullOutDto> getEvents(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart,
-                                    LocalDateTime rangeEnd, Boolean onlyAvailable, SortType sort, Integer from,
-                                    Integer size);
+    List<EventFullOutDto> getAll(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart,
+                                 LocalDateTime rangeEnd, Boolean onlyAvailable, SortType sort, Integer from,
+                                 Integer size);
 
     /**
      * <h3>Получение подробной информации об опубликованном событии по его идентификатору</h3>
@@ -29,5 +29,5 @@ public interface EventPublicService {
      * <li>информация о событии должна включать в себя количество просмотров и количество подтвержденных запросов</li>
      * <li>информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики</li>
      */
-    EventFullOutDto getEventById(Long id);
+    EventFullOutDto getById(Long id);
 }

@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.ewm.event.model.EventState.*;
 import static ru.practicum.ewm.utils.DateFormat.DATE_FORMATTER;
 
 /**
@@ -51,7 +52,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final ClientService statistics;
 
     @Override
-    public List<EventShortDto> getEvents(Long userId, Integer from, Integer size) {
+    public List<EventShortDto> getAll(Long userId, Integer from, Integer size) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id=%s not found", userId)));
         Pageable pageRequest = PageRequest.of(from / size, size);
@@ -63,7 +64,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     @Transactional
-    public EventFullOutDto changeEvent(Long userId, EventFullDto dto) {
+    public EventFullOutDto change(Long userId, EventFullDto dto) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id=%s not found", userId)));
 
@@ -73,12 +74,12 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         if (!userId.equals(update.getInitiator().getId())) {
             throw new AccessDeniedException("Access denied");
         }
-        if (update.getState() == EventState.PUBLISHED) {
+        if (update.getState() == PUBLISHED) {
             throw new ConditionsAreNotMetException("ADD exception");
         }
         saveChangesToEvent(dto, update);
         update.setModerationRequired(true);
-        update.setState(EventState.PENDING);
+        update.setState(PENDING);
 
         Event save = repository.save(update);
         log.info("Event id = {} successfully changed", save.getId());
@@ -129,7 +130,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             throw new ConditionsAreNotMetException("More than 1 events found.");
         }
         Event event = events.get(0);
-        if (event.getState() == EventState.PUBLISHED) {
+        if (event.getState() == PUBLISHED) {
             throw new ConditionsAreNotMetException(String.format("Event cannot be updated. Wrong state %s.",
                     event.getState()));
         }
@@ -138,7 +139,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     @Transactional
-    public EventFullOutDto addEvent(Long userId, EventFullDto dto) {
+    public EventFullOutDto add(Long userId, EventFullDto dto) {
         final User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id=%s not found", userId)));
         final Category category = categoryRepository.findById(dto.getCategory()).orElseThrow(() ->
@@ -156,7 +157,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 .participantLimit(dto.getParticipantLimit())
                 .createdOn(LocalDateTime.now())
                 .moderationRequired(dto.getRequestModeration())
-                .state(EventState.PENDING)
+                .state(PENDING)
                 .title(dto.getTitle())
                 .build();
         Event save = repository.save(event);
@@ -165,7 +166,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     }
 
     @Override
-    public EventFullOutDto getEventById(Long userId, Long eventId) {
+    public EventFullOutDto getById(Long userId, Long eventId) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id=%s not found", userId)));
 
@@ -181,7 +182,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     @Transactional
-    public EventFullOutDto cancelEventById(Long userId, Long eventId) {
+    public EventFullOutDto cancel(Long userId, Long eventId) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id=%s not found", userId)));
 
@@ -192,11 +193,11 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             throw new AccessDeniedException("Access denied");
         }
 
-        if (!event.getState().equals(EventState.PENDING)) {
+        if (!event.getState().equals(PENDING)) {
             throw new ConditionsAreNotMetException("Only PENDING events can be canceled.");
         }
 
-        event.setState(EventState.CANCELED);
+        event.setState(CANCELED);
         Event save = repository.save(event);
 
         log.info("Event with id={} successfully canceled", eventId);
@@ -223,7 +224,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     }
 
     @Override
-    public ParticipationRequestDto confirmRequest(Long userId, Long eventId, Long reqId) {
+    public ParticipationRequestDto confirm(Long userId, Long eventId, Long reqId) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id=%s not found", userId)));
 
@@ -263,7 +264,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     @Transactional
-    public ParticipationRequestDto rejectRequest(Long userId, Long eventId, Long reqId) {
+    public ParticipationRequestDto reject(Long userId, Long eventId, Long reqId) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("User with id=%s not found", userId)));
 

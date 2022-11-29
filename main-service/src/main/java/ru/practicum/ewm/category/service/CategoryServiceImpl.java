@@ -25,24 +25,24 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto updateCategory(CategoryDto dto) {
+    public CategoryDto update(CategoryDto dto) {
         Category cat = repository.findById(dto.getId()).orElseThrow(() ->
                 new NotFoundException(String.format("Category with id=%s was not found.", dto.getId())));
         cat.setName(dto.getName());
-        repository.save(cat);
-        return CategoryMapper.toCategoryDto(cat);
+        Category save = repository.save(cat);
+        return CategoryMapper.toCategoryDto(save);
     }
 
     @Override
     @Transactional
-    public CategoryDto addCategory(CategoryDto dto) {
+    public CategoryDto add(CategoryDto dto) {
         Category category = repository.save(CategoryMapper.toCategory(dto));
         return CategoryMapper.toCategoryDto(category);
     }
 
     @Override
     @Transactional
-    public void deleteCategory(Long catId) {
+    public void delete(Long catId) {
         Category cat = repository.findById(catId).orElseThrow(() ->
                 new NotFoundException(String.format("Category with id=%s was not found.", catId)));
         repository.deleteById(catId);

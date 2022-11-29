@@ -12,18 +12,18 @@ public interface CategoryService {
      * Изменение категории<br>
      * <i>Имя категории должно быть уникальным</i>
      */
-    CategoryDto updateCategory(CategoryDto dto);
+    CategoryDto update(CategoryDto dto);
 
     /**
      * Добавление новой категории<br>
      * <i>Имя категории должно быть уникальным</i>
      */
-    CategoryDto addCategory(CategoryDto dto);
+    CategoryDto add(CategoryDto dto);
 
     /**
      * Удаление категории
      */
-    void deleteCategory(Long catId);
+    void delete(Long catId);
 
     /**
      * Получение категорий

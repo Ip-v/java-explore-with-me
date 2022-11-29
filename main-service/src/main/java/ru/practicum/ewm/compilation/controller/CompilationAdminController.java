@@ -25,9 +25,9 @@ public class CompilationAdminController {
      * Добавление новой подборки
      */
     @PostMapping
-    public CompilationDto addCompilation(@RequestBody @Validated({Create.class}) NewCompilationDto dto) {
+    public CompilationDto add(@RequestBody @Validated({Create.class}) NewCompilationDto dto) {
         log.info("Added new compilation {}", dto);
-        return service.addCompilation(dto);
+        return service.add(dto);
     }
 
     /**
@@ -36,7 +36,7 @@ public class CompilationAdminController {
     @DeleteMapping("/{compId}")
     public void deleteCompilation(@PathVariable(name = "compId") Long compId) {
         log.info("Compilation id={} deleted", compId);
-        service.deleteCompilation(compId);
+        service.delete(compId);
     }
 
     /**
@@ -63,17 +63,17 @@ public class CompilationAdminController {
      * Открепить подборку на главной страницу
      */
     @DeleteMapping("/{compId}/pin")
-    public void unpinCompilation(@PathVariable(name = "compId") Long compId) {
+    public void unpin(@PathVariable(name = "compId") Long compId) {
         log.info("Unpin compilation {}", compId);
-        service.unpinCompilation(compId);
+        service.unpin(compId);
     }
 
     /**
      * Закрепить подборку на главной странице
      */
     @PatchMapping("/{compId}/pin")
-    public void pinCompilation(@PathVariable(name = "compId") Long compId) {
+    public void pin(@PathVariable(name = "compId") Long compId) {
         log.info("Pin compilation {}", compId);
-        service.pinCompilation(compId);
+        service.pin(compId);
     }
 }

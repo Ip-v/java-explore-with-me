@@ -11,7 +11,7 @@ public interface CompilationPublicService {
     /**
      * Поулчение подборок событий
      */
-    List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size);
+    List<CompilationDto> getAll(Boolean pinned, Integer from, Integer size);
 
     /**
      * Получение подборки событий по его id
@@ -19,5 +19,5 @@ public interface CompilationPublicService {
      * @param compId ид
      * @return CompilationDto или null
      */
-    CompilationDto getCompilationById(Long compId);
+    CompilationDto getById(Long compId);
 }

@@ -23,10 +23,10 @@ public class RequestPrivateController {
      * Получение информации о заявках текущего пользователя на участие в чужих событиях
      */
     @GetMapping
-    public List<ParticipationRequestDto> getRequests(@PathVariable @Positive(message = "The number must be > then 0")
+    public List<ParticipationRequestDto> getAll(@PathVariable @Positive(message = "The number must be > then 0")
                                                      Long userId) {
         log.info("Получение информации о заявках пользователя {} на участие в чужих событиях", userId);
-        return service.getRequests(userId);
+        return service.getAll(userId);
     }
 
     /**
@@ -38,22 +38,22 @@ public class RequestPrivateController {
      * <li>если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного</li>
      */
     @PostMapping
-    public ParticipationRequestDto addRequest(@PathVariable @Positive(message = "The number must be > then 0")
+    public ParticipationRequestDto add(@PathVariable @Positive(message = "The number must be > then 0")
                                               Long userId, @RequestParam @Positive Long eventId) {
         log.info("Добавление запроса от пользователя {} на участие в событии {}", userId, eventId);
-        return service.addRequest(userId, eventId);
+        return service.add(userId, eventId);
     }
 
     /**
      * Отмена своего запроса на участие в событии
      */
     @PatchMapping("/{requestId}/cancel")
-    public ParticipationRequestDto cancelRequest(@PathVariable @Positive(message = "The number must be > then 0")
+    public ParticipationRequestDto cancel(@PathVariable @Positive(message = "The number must be > then 0")
                                                  Long userId,
-                                                 @PathVariable @Positive(message = "The number must be > then 0")
+                                          @PathVariable @Positive(message = "The number must be > then 0")
                                                  Long requestId) {
         log.info("Отмена своего запроса {} пользователем {} на участие в событии", requestId, userId);
 
-        return service.cancelRequest(requestId, userId);
+        return service.cancel(requestId, userId);
     }
 }

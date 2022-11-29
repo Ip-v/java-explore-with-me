@@ -17,15 +17,15 @@ public interface EventRequestService {
      * <li>если у события достигнут лимит запросов на участие - необходимо вернуть ошибку</li>
      * <li>если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного</li>
      */
-    ParticipationRequestDto addRequest(Long userId, Long eventId);
+    ParticipationRequestDto add(Long userId, Long eventId);
 
     /**
      * Получение информации о заявках текущего пользователя на участие в чужих событиях
      */
-    List<ParticipationRequestDto> getRequests(Long userId);
+    List<ParticipationRequestDto> getAll(Long userId);
 
     /**
      * Отмена своего запроса на участие в событии
      */
-    ParticipationRequestDto cancelRequest(Long requestId, Long userId);
+    ParticipationRequestDto cancel(Long requestId, Long userId);
 }

@@ -29,29 +29,29 @@ public class UserAdminController {
      * либо о конкретных (учитываются указанные идентификаторы)</i>
      */
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam(name = "ids", required = false) Long[] ids,
-                                  @RequestParam(name = "from", defaultValue = "10") Integer from,
-                                  @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    public List<UserDto> getAll(@RequestParam(name = "ids", required = false) Long[] ids,
+                                @RequestParam(name = "from", defaultValue = "10") Integer from,
+                                @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получение информации о прользователях {} {} {}", ids, from, size);
 
-        return service.getUsers(ids, from, size);
+        return service.getAll(ids, from, size);
     }
 
     /**
      * Добавление нового пользователия
      */
     @PostMapping
-    public UserDto addUser(@RequestBody @Valid UserDto dto) {
+    public UserDto add(@RequestBody @Valid UserDto dto) {
         log.info("Добавление нового пользователия {}", dto);
-        return service.addUser(dto);
+        return service.add(dto);
     }
 
     /**
      * Удаление пользователя
      */
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable(name = "userId") @NotNull Long userId) {
+    public void delete(@PathVariable(name = "userId") @NotNull Long userId) {
         log.info("Удаление пользователя с ИД {}", userId);
-        service.deleteUser(userId);
+        service.delete(userId);
     }
 }

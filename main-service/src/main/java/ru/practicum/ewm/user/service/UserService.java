@@ -13,15 +13,15 @@ public interface UserService {
      * <i>Возвращает информацию обо всех пользователях (учитываются параметры ограничения выборки),
      * либо о конкретных (учитываются указанные идентификаторы)</i>
      */
-    List<UserDto> getUsers(Long[] ids, Integer from, Integer size);
+    List<UserDto> getAll(Long[] ids, Integer from, Integer size);
 
     /**
      * Добавление нового пользователия
      */
-    UserDto addUser(UserDto dto);
+    UserDto add(UserDto dto);
 
     /**
      * Удаление пользователя
      */
-    void deleteUser(Long userId);
+    void delete(Long userId);
 }

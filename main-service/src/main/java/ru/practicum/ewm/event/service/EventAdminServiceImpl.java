@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static ru.practicum.ewm.event.model.EventState.*;
 import static ru.practicum.ewm.utils.DateFormat.DATE_FORMATTER;
 
 @Slf4j
@@ -37,8 +38,8 @@ public class EventAdminServiceImpl implements EventAdminService {
     private final ClientService statistics;
 
     @Override
-    public List<EventFullOutDto> getEvents(Integer[] users, String[] states, Integer[] categories,
-                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+    public List<EventFullOutDto> getAll(Integer[] users, String[] states, Integer[] categories,
+                                        LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
 
         List<BooleanExpression> expression = new ArrayList<>();
         QEvent event = QEvent.event;
@@ -71,7 +72,7 @@ public class EventAdminServiceImpl implements EventAdminService {
 
     @Override
     @Transactional
-    public EventFullOutDto updateEvent(EventFullDto dto, Long eventId) {
+    public EventFullOutDto update(EventFullDto dto, Long eventId) {
         Event updated = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%s not found", eventId)));
         saveChangesToEvent(dto, updated);
@@ -82,15 +83,15 @@ public class EventAdminServiceImpl implements EventAdminService {
 
     @Override
     @Transactional
-    public EventFullOutDto publishEvent(Long eventId) {
+    public EventFullOutDto publish(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%s not found", eventId)));
 
-        if (!event.getState().equals(EventState.PENDING)) {
+        if (!event.getState().equals(PENDING)) {
             throw new ConditionsAreNotMetException("Event should be in PENDING state");
         }
         event.setPublishedOn(LocalDateTime.now());
-        event.setState(EventState.PUBLISHED);
+        event.setState(PUBLISHED);
 
         Event save = eventRepository.save(event);
         log.info("Event id={} successfully published", eventId);
@@ -99,15 +100,15 @@ public class EventAdminServiceImpl implements EventAdminService {
 
     @Override
     @Transactional
-    public EventFullOutDto rejectEvent(Long eventId) {
+    public EventFullOutDto reject(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%s not found", eventId)));
 
-        if (event.getState().equals(EventState.PUBLISHED)) {
+        if (event.getState().equals(PUBLISHED)) {
             throw new ConditionsAreNotMetException(
                     String.format("Event id=%s already published and couldn't be rejected", eventId));
         }
-        event.setState(EventState.CANCELED);
+        event.setState(CANCELED);
         Event save = eventRepository.save(event);
         log.info("Event id={} successfully rejected", eventId);
 

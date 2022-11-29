@@ -11,12 +11,12 @@ public interface CompilationAdminService {
     /**
      * Добавление новой подборки
      */
-    CompilationDto addCompilation(NewCompilationDto dto);
+    CompilationDto add(NewCompilationDto dto);
 
     /**
      * Удаление события из подборки
      */
-    void deleteCompilation(Long compId);
+    void delete(Long compId);
 
     /**
      * Добавление события в подборку
@@ -31,10 +31,10 @@ public interface CompilationAdminService {
     /**
      * Закрепить подборку на главной странице
      */
-    void pinCompilation(Long compId);
+    void pin(Long compId);
 
     /**
      * Открепить подборку на главной страницу
      */
-    void unpinCompilation(Long compId);
+    void unpin(Long compId);
 }

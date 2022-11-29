@@ -26,7 +26,7 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
     private final CompilationRepository repository;
 
     @Override
-    public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
+    public List<CompilationDto> getAll(Boolean pinned, Integer from, Integer size) {
         Pageable pageRequest = PageRequest.of(from / size, size);
         List<Compilation> list = pinned == null ? repository.findAll(pageRequest).getContent()
                 : pinned ? repository.findCompilationsByPinnedTrue(pageRequest)
@@ -36,7 +36,7 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
     }
 
     @Override
-    public CompilationDto getCompilationById(Long compId) {
+    public CompilationDto getById(Long compId) {
         Compilation compilation = repository.findById(compId)
                 .orElseThrow(() -> new NotFoundException(String.format("Compilation %d not found", compId)));
         log.info("Compilation {} successfully found", compId);

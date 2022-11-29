@@ -34,9 +34,9 @@ public class EventPublicServiceImpl implements EventPublicService {
     private final ClientService statistics;
 
     @Override
-    public List<EventFullOutDto> getEvents(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart,
-                                           LocalDateTime rangeEnd, Boolean onlyAvailable, SortType sort, Integer from,
-                                           Integer size) {
+    public List<EventFullOutDto> getAll(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart,
+                                        LocalDateTime rangeEnd, Boolean onlyAvailable, SortType sort, Integer from,
+                                        Integer size) {
         List<BooleanExpression> expression = new ArrayList<>();
         QEvent event = QEvent.event;
 
@@ -87,7 +87,7 @@ public class EventPublicServiceImpl implements EventPublicService {
     }
 
     @Override
-    public EventFullOutDto getEventById(Long id) {
+    public EventFullOutDto getById(Long id) {
         Event event = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%s not found", id)));
 

@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
-    public List<UserDto> getUsers(Long[] ids, Integer from, Integer size) {
+    public List<UserDto> getAll(Long[] ids, Integer from, Integer size) {
         List<UserDto> users = new ArrayList<>();
         if (ids != null) {
             repository.findAllById(List.of(ids)).forEach(u -> users.add(UserMapper.toUserDto(u)));
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto addUser(UserDto dto) {
+    public UserDto add(UserDto dto) {
         final User user = UserMapper.toUser(dto);
         final User save = repository.save(user);
         return UserMapper.toUserDto(save);
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(Long userId) {
+    public void delete(Long userId) {
         repository.deleteById(userId);
     }
 }

@@ -30,7 +30,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     @Override
     @Transactional
-    public CompilationDto addCompilation(NewCompilationDto dto) {
+    public CompilationDto add(NewCompilationDto dto) {
         List<Event> events = eventRepository.findAllById(dto.getEvents());
         Compilation compilation = Compilation.builder()
                 .events(events)
@@ -45,7 +45,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     @Override
     @Transactional
-    public void deleteCompilation(Long compId) {
+    public void delete(Long compId) {
         Compilation compilation = repository.findById(compId)
                 .orElseThrow(() -> new NotFoundException(String.format("Compilation %d not found", compId)));
         repository.delete(compilation);
@@ -92,7 +92,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     @Override
     @Transactional
-    public void pinCompilation(Long compId) {
+    public void pin(Long compId) {
         Compilation compilation = repository.findById(compId).orElseThrow(() ->
                 new NotFoundException(String.format("Compilation id=%d not found", compId)));
 
@@ -103,7 +103,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     @Override
     @Transactional
-    public void unpinCompilation(Long compId) {
+    public void unpin(Long compId) {
         Compilation compilation = repository.findById(compId).orElseThrow(() ->
                 new NotFoundException(String.format("Compilation id=%d not found", compId)));
 
