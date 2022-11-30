@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static ru.practicum.ewm.utils.DateFormat.DATE_FORMATTER;
 import static ru.practicum.ewm.utils.State.*;
@@ -64,8 +65,16 @@ public class EventAdminServiceImpl implements EventAdminService {
         BooleanExpression searchCriteria = expression.stream().reduce(BooleanExpression::and).get();
         Pageable pageable = PageRequest.of(from / size, size);
 
+        List<Event> events = eventRepository.findAll(searchCriteria, pageable).toList();
+        Map<String, Long> stats = statistics.getUrisWithHits(events);
+
+        for (Event e : events) {
+            String uri = "/events/" + e.getId();
+            e.setViews(stats.getOrDefault(uri, 0L));
+        }
+
         return eventRepository.findAll(searchCriteria, pageable)
-                .map(e -> EventMapper.toEventFullOutDto(e, getViews(e.getId())))
+                .map(EventMapper::toEventFullOutDto)
                 .toList();
     }
 

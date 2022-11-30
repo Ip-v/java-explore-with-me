@@ -36,6 +36,28 @@ public class EventMapper {
                 .build();
     }
 
+    public static EventFullOutDto toEventFullOutDto(Event event) {
+        return EventFullOutDto.builder()
+                .annotation(event.getAnnotation())
+                .category(event.getCategory())
+                .confirmedRequests(event.getRequests() == null ? 0 : event.getRequests().size())
+                .createdOn(DATE_FORMATTER.format(event.getCreatedOn()))
+                .description(event.getDescription())
+                .eventDate(DATE_FORMATTER.format(event.getEventDate()))
+                .id(event.getId())
+                .initiator(UserMapper.toUserShortDto(event.getInitiator()))
+                .location(event.getLocation())
+                .paid(event.getPaid())
+                .participantLimit(event.getParticipantLimit())
+                .publishedOn(event.getPublishedOn() == null ? null : DATE_FORMATTER.format(event.getPublishedOn()))
+                .requestModeration(event.getModerationRequired())
+                .state(event.getState().name())
+                .title(event.getTitle())
+                .views(event.getViews())
+                .build();
+    }
+
+
     public static EventShortDto toEventShortDto(Event event) {
         return EventShortDto.builder()
                 .annotation(event.getAnnotation())

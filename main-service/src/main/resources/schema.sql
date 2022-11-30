@@ -93,7 +93,3 @@ CREATE TABLE eventcompilationpairs
         CONSTRAINT eventcompilationpairs_events_event_id_fk
             REFERENCES events
 );
-
-
-
-
