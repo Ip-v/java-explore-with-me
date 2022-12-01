@@ -12,7 +12,6 @@ import ru.practicum.ewm.event.service.EventPublicService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,7 +39,7 @@ public class EventPublicController {
      * информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
      */
     @GetMapping
-    public List<EventFullOutDto> getAll(@RequestParam(name = "text", required = false) @NotEmpty String text,
+    public List<EventFullOutDto> getAll(@RequestParam(name = "text", required = false) String text,
                                         @RequestParam(name = "categories", required = false) Integer[] categories,
                                         @RequestParam(name = "paid", required = false) Boolean paid,
                                         @RequestParam(name = "rangeStart", required = false)

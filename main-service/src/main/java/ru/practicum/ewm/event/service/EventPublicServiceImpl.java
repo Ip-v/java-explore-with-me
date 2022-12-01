@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ru.practicum.ewm.utils.State.CONFIRMED;
@@ -77,20 +78,34 @@ public class EventPublicServiceImpl implements EventPublicService {
 
         BooleanExpression searchCriteria = expression.stream().reduce(BooleanExpression::and).get();
 
+        Pageable pageable;
+        List<Event> events;
         if (sort != null && sort.equals(SortType.EVENT_DATE)) {
-            Pageable pageable = PageRequest.of(from / size, size, Sort.by("eventDate").descending());
-            return repository.findAll(searchCriteria, pageable)
-                    .map(e -> EventMapper.toEventFullOutDto(e, getViews(e.getId())))
-                    .toList();
+            pageable = PageRequest.of(from / size, size, Sort.by("eventDate").descending());
+            events = repository.findAll(searchCriteria, pageable).toList();
+        } else {
+            pageable = PageRequest.of(from / size, size);
+            events = repository.findAll(searchCriteria, pageable)
+                    .stream()
+                    .collect(Collectors.toList());
         }
-        Pageable pageable = PageRequest.of(from / size, size);
-        log.info("Event list requst with filter");
+        log.info("Event list request with filter {}", searchCriteria);
 
-        return repository.findAll(searchCriteria, pageable).stream()
-                .map(e -> EventMapper.toEventFullOutDto(e, getViews(e.getId())))
-                .sorted(Comparator.comparing(EventFullOutDto::getViews))
+        Map<String, Long> stats = statistics.getUrisWithHits(events);
+
+        for (Event e : events) {
+            String uri = "/events/" + e.getId();
+            e.setViews(stats.getOrDefault(uri, 0L));
+        }
+
+        if (sort != null && !sort.equals(SortType.EVENT_DATE)) {
+            events.sort(Comparator.comparing(Event::getViews));
+        }
+
+        return events
+                .stream()
+                .map(EventMapper::toEventFullOutDto)
                 .collect(Collectors.toList());
-
     }
 
     @Override
@@ -101,14 +116,10 @@ public class EventPublicServiceImpl implements EventPublicService {
         if (!event.getState().equals(PUBLISHED)) {
             throw new ConditionsAreNotMetException("Event isn't published.");
         }
-        EventFullOutDto out = EventMapper.toEventFullOutDto(event, getViews(event.getId()));
+        EventFullOutDto out = EventMapper.toEventFullOutDto(event, statistics.getStats("/events/" + event.getId()));
         out.setConfirmedRequests(eventRequestRepository.countByEventAndConfirmed(event, CONFIRMED));
-        log.info("Event requst by id {}", id);
+        log.info("Event request by id {}", id);
 
         return out;
-    }
-
-    private Long getViews(long id) {
-        return statistics.getStats("/events/" + id);
     }
 }
