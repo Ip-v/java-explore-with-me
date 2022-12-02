@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+/postman/
+/main-service/src/main/java/ru/practicum/ewm/comment/
