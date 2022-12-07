@@ -3,6 +3,7 @@ package ru.practicum.ewm.exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -74,6 +75,21 @@ public class ErrorHandler {
                 .errors(createError(e))
                 .status("FORBIDDEN")
                 .reason("For the requested operation the conditions are not met.")
+                .message(e.getLocalizedMessage())
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+    }
+
+    //MethodArgumentNotValidException
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError conditionsAreNotMetException(final MethodArgumentNotValidException e) {
+        log.error("400 {}", e.getMessage(), e);
+
+        return ApiError.builder()
+                .errors(createError(e))
+                .status("BAD_REQUEST")
+                .reason("Wrong arguments in request.")
                 .message(e.getLocalizedMessage())
                 .timestamp(LocalDateTime.now().toString())
                 .build();

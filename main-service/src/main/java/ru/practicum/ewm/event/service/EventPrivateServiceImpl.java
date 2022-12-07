@@ -229,6 +229,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto confirm(Long userId, Long eventId, Long reqId) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException(String.format("User with id=%s not found", userId));
