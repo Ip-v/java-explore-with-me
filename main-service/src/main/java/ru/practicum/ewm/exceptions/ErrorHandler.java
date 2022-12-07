@@ -79,6 +79,7 @@ public class ErrorHandler {
                 .timestamp(LocalDateTime.now().toString())
                 .build();
     }
+
     //MethodArgumentNotValidException
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -93,6 +94,7 @@ public class ErrorHandler {
                 .timestamp(LocalDateTime.now().toString())
                 .build();
     }
+
     //AccessDeniedException
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)

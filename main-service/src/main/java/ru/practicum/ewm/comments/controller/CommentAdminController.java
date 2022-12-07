@@ -66,11 +66,11 @@ public class CommentAdminController {
     public List<CommentDto> getAllFiltered(@RequestParam(name = "eventId", required = false) Long[] eventIds,
                                            @RequestParam(name = "text", required = false) String text,
                                            @RequestParam(name = "rangeStart", required = false)
-                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                            @RequestParam(name = "rangeEnd", required = false)
-                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                            @RequestParam(name = "from", defaultValue = "0")
-                                            @PositiveOrZero Integer from,
+                                           @PositiveOrZero Integer from,
                                            @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size) {
         log.info("Request comments for event{} with filter {} start {} end {} from {} size {}",
                 eventIds, text, rangeStart, rangeEnd, from, size);

@@ -2,7 +2,6 @@ package ru.practicum.ewm.comments.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 import ru.practicum.ewm.user.dto.UserShortDto;
 
 import javax.validation.constraints.NotEmpty;
