@@ -63,17 +63,23 @@ public class CommentAdminController {
      * Поиск комментариев с возможностью фильтрации
      */
     @GetMapping
-    public List<CommentDto> getAllByEventId(@RequestParam(name = "eventId", required = false) Long[] eventIds,
-                                            @RequestParam(name = "text", required = false) String text,
-                                            @RequestParam(name = "rangeStart", required = false)
+    public List<CommentDto> getAllFiltered(@RequestParam(name = "eventId", required = false) Long[] eventIds,
+                                           @RequestParam(name = "text", required = false) String text,
+                                           @RequestParam(name = "rangeStart", required = false)
                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-                                            @RequestParam(name = "rangeEnd", required = false)
+                                           @RequestParam(name = "rangeEnd", required = false)
                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-                                            @RequestParam(name = "from", defaultValue = "0")
+                                           @RequestParam(name = "from", defaultValue = "0")
                                             @PositiveOrZero Integer from,
-                                            @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size) {
+                                           @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size) {
         log.info("Request comments for event{} with filter {} start {} end {} from {} size {}",
                 eventIds, text, rangeStart, rangeEnd, from, size);
         return service.getAll(eventIds, text, rangeStart, rangeEnd, from, size);
+    }
+
+    @GetMapping("/{commentId}")
+    public CommentDto getById(@PathVariable @Positive(message = "The number must be greater then 0") Long commentId) {
+        log.info("GET comment id {}", commentId);
+        return service.getById(commentId);
     }
 }

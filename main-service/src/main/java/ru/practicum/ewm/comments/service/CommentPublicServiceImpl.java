@@ -56,6 +56,8 @@ public class CommentPublicServiceImpl implements CommentPublicService {
             expression.add(comment.createdOn.before(rangeEnd));
         }
 
+        expression.add(comment.state.eq(PUBLISHED));
+
         BooleanExpression searchCriteria = expression.stream().reduce(BooleanExpression::and).get();
         Pageable pageable = PageRequest.of(from / size, size);
 

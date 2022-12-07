@@ -9,6 +9,7 @@ import ru.practicum.ewm.comments.model.dto.NewCommentDto;
 import ru.practicum.ewm.comments.service.CommentPrivateService;
 import ru.practicum.ewm.utils.Create;
 import ru.practicum.ewm.utils.State;
+import ru.practicum.ewm.utils.Update;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/comments/{userId}")
+@RequestMapping(path = "/comments/users/{userId}")
 @Validated
 public class CommentPrivateController {
     private final CommentPrivateService service;
@@ -53,7 +54,7 @@ public class CommentPrivateController {
     @PatchMapping("/{commentId}")
     public CommentDto update(@PathVariable @Positive(message = "The number must be greater then 0") Long userId,
                              @PathVariable @Positive(message = "The number must be greater then 0") Long commentId,
-                             @RequestBody @Validated NewCommentDto dto) {
+                             @RequestBody @Validated({Update.class}) NewCommentDto dto) {
         log.info("Updating comment id={} by user id={}. New comment {}", commentId, userId, dto);
         return service.update(userId, commentId, dto);
     }

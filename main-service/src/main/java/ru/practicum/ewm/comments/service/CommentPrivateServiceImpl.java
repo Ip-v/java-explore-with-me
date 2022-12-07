@@ -13,6 +13,7 @@ import ru.practicum.ewm.comments.model.dto.NewCommentDto;
 import ru.practicum.ewm.comments.repository.CommentRepository;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repository.EventRepository;
+import ru.practicum.ewm.exceptions.AccessDeniedException;
 import ru.practicum.ewm.exceptions.ConditionsAreNotMetException;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.request.model.Request;
@@ -99,6 +100,11 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
 
         final Comment comment = repository.findById(commentId).orElseThrow(() ->
                 new NotFoundException(String.format("Comment with id=%s not found", commentId)));
+
+        if (!comment.getAuthor().getId().equals(userId)) {
+            throw new AccessDeniedException("Only author or admin can delete comment.");
+        }
+
         repository.delete(comment);
         log.info("Comment id={} successfully deleted", commentId);
     }

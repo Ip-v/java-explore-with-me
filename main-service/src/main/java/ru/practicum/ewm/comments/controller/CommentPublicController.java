@@ -38,7 +38,7 @@ public class CommentPublicController {
                                             @RequestParam(name = "from", defaultValue = "0")
                                             @PositiveOrZero Integer from,
                                             @RequestParam(name = "size", defaultValue = "10") @Min(1) Integer size) {
-        log.info("Request comments for event{} with filter {} start {} end {} from {} size {}",
+        log.info("GET comments for event id={} with filter text={} start={} end={} from={} size={}",
                 eventId, text, rangeStart, rangeEnd, from, size);
         return service.getAllByEventId(eventId, text, rangeStart, rangeEnd, from, size);
     }

@@ -22,6 +22,7 @@ import ru.practicum.ewm.utils.State;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ru.practicum.ewm.utils.DateFormat.DATE_FORMATTER;
@@ -124,14 +125,28 @@ public class CommentAdminServiceImpl implements CommentAdminService {
             expression.add(comment.createdOn.before(rangeEnd));
         }
 
-        BooleanExpression searchCriteria = expression.stream().reduce(BooleanExpression::and).get();
+        Optional<BooleanExpression> searchCriteria = expression.stream().reduce(BooleanExpression::and);
         Pageable pageable = PageRequest.of(from / size, size);
 
-        List<Comment> comments = repository.findAll(searchCriteria, pageable).toList();
-        log.info("Get comments with search criteria {} returned {} results", searchCriteria, comments.size());
+        List<Comment> comments = searchCriteria
+                .map(booleanExpression -> repository
+                        .findAll(booleanExpression, pageable)
+                        .toList())
+                .orElseGet(() -> repository
+                        .findAll(pageable)
+                        .toList());
+        log.info("GET comments with search criteria {} returned {} results", searchCriteria, comments.size());
 
         return comments.stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto getById(Long commentId) {
+        final Comment comment = repository.findById(commentId).orElseThrow(() ->
+                new NotFoundException(String.format("Comment with id=%s not found", commentId)));
+
+        return CommentMapper.toCommentDto(comment);
     }
 }

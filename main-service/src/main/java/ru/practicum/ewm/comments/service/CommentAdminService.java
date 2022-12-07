@@ -35,4 +35,9 @@ public interface CommentAdminService {
      */
     List<CommentDto> getAll(Long[] eventIds, String text, LocalDateTime rangeStart, LocalDateTime rangeEnd, int from,
                             int size);
+
+    /**
+     * Получение комментария по ID
+     */
+    CommentDto getById(Long commentId);
 }
